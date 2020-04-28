@@ -1,5 +1,3 @@
-from itertools import count
-
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
@@ -9,9 +7,9 @@ from .models import Category,Institution,Donation
 
 class IndexPage(View):
     def get(self, request):
-        bags = Donation.objects.values('quantity').aggregate(Sum('quantity'))
-        inst_qty = Donation.objects.values('institution').distinct().count()
-        ctx= {'qty': bags['quantity__sum'], 'inst': inst_qty}
+        qty = Donation.objects.values('quantity').aggregate(Sum('quantity'))
+        inst = Donation.objects.values('institution').distinct().count()
+        ctx= {'qty': qty['quantity__sum'], 'inst': inst}
         return render(request, 'index.html', ctx)
 
 # class IndexPage(TemplateView):
