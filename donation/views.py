@@ -9,7 +9,10 @@ class IndexPage(View):
     def get(self, request):
         qty = Donation.objects.values('quantity').aggregate(Sum('quantity'))
         inst = Donation.objects.values('institution').distinct().count()
-        ctx= {'qty': qty['quantity__sum'], 'inst': inst}
+        fund = Institution.objects.filter(type='F')
+        orgp = Institution.objects.filter(type='OP')
+        zblk = Institution.objects.filter(type='ZL')
+        ctx= {'qty': qty['quantity__sum'], 'inst': inst, 'fund': fund, 'orgp': orgp, 'zblk': zblk}
         return render(request, 'index.html', ctx)
 
 # class IndexPage(TemplateView):

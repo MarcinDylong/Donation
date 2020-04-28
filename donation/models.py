@@ -13,7 +13,7 @@ class Category(models.Model):
 
 Institution_type = [
     ('F', 'Fundacja'),
-    ('OP', 'Organizacja porządkowa'),
+    ('OP', 'Organizacja pozarządowa'),
     ('ZL', 'Zbiórka lokalna'),
 ]
 
