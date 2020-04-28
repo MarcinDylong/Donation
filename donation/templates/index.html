@@ -101,13 +101,31 @@
       </li>
       {% endfor %}
     </ul>
-    <!-- Pagination
+    <!-- Pagination-->
+    {% if fund.has_other_pages %}
     <ul class="help--slides-pagination">
-      <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
+            {% if fund.has_previous %}
+                <li class="btn btn--small btn--without-border">
+                    <a class="page-link" href="?page_f={{ fund.previous_page_number }}#help"> <
+                    </a>
+                </li>
+            {% endif %}
+            {% for i in fund.paginator.page_range %}
+                {% if fund.number == i %}
+                    <li class="btn btn--small btn--without-border active">{{ i }}</li>
+                {% else %}
+                    <li class="btn btn--small btn--without-border"><a class="page-link" href="?page_f={{ i }}#help">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if fund.has_next %}
+                <li class="btn btn--small btn--without-border active">
+                    <a class="page-link" href="?page_f={{ fund.next_page_number }}#help">
+                    >
+                    </a>
+                </li>
+            {% endif %}
     </ul>
-    -->
+    {% endif %}
   </div>
 
 
@@ -136,15 +154,31 @@
       {% endfor %}
     </ul>
 
-    <!-- Pagination
+    <!-- Pagination-->
+    {% if orgp.has_other_pages %}
     <ul class="help--slides-pagination">
-      <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>
+            {% if orgp.has_previous %}
+                <li class="btn btn--small btn--without-border">
+                    <a class="page-link" href="?page_o={{ orgp.previous_page_number }}#help"> <
+                    </a>
+                </li>
+            {% endif %}
+            {% for i in orgp.paginator.page_range %}
+                {% if orgp.number == i %}
+                    <li class="btn btn--small btn--without-border active">{{ i }}</li>
+                {% else %}
+                    <li class="btn btn--small btn--without-border"><a class="page-link" href="?page_o={{ i }}#help">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if orgp.has_next %}
+                <li class="btn btn--small btn--without-border active">
+                    <a class="page-link" href="?page_o={{ orgp.next_page_number }}#help">
+                    >
+                    </a>
+                </li>
+            {% endif %}
     </ul>
-    -->
+    {% endif %}
   </div>
 
   <!-- SLIDE 3 -->
@@ -172,12 +206,31 @@
       {% endfor %}
     </ul>
 
-    <!-- Pagination
+    <!-- Pagination-->
+    {% if zblk.has_other_pages %}
     <ul class="help--slides-pagination">
-      <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-      <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
+            {% if zblk.has_previous %}
+                <li class="btn btn--small btn--without-border">
+                    <a class="page-link" href="?page_z={{ zblk.previous_page_number }}#help"> <
+                    </a>
+                </li>
+            {% endif %}
+            {% for i in zblk.paginator.page_range %}
+                {% if zblk.number == i %}
+                    <li class="btn btn--small btn--without-border active">{{ i }}</li>
+                {% else %}
+                    <li class="btn btn--small btn--without-border"><a class="page-link" href="?page_z={{ i }}#help">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if zblk.has_next %}
+                <li class="btn btn--small btn--without-border active">
+                    <a class="page-link" href="?page_z={{ zblk.next_page_number }}#help">
+                    >
+                    </a>
+                </li>
+            {% endif %}
     </ul>
-    -->
+    {% endif %}
   </div>
 </section>
 {% endblock %}
