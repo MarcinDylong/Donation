@@ -57,6 +57,9 @@ class Login(View):
             if user is not None:
                 login(request, user)
                 return redirect('/')
+            elif User.objects.filter(username=email).exists():
+                messages.error(request, f'Podano nie poprawne hasło!')
+                return render(request, 'login.html', {'form': form})
             else:
                 messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
                 return render(request, 'register.html')
