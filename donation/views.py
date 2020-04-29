@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
@@ -8,6 +9,7 @@ from django.contrib import messages
 from braces.views import CsrfExemptMixin
 
 from .models import Category,Institution,Donation
+from .forms import LoginForm
 
 class IndexPage(View):
     def get(self, request):
@@ -36,13 +38,32 @@ class IndexPage(View):
 # class IndexPage(TemplateView):
 #     template_name = 'index.html'
 
-class AddDonation(View):
-    def get(self, request):
+def AddDonation(request):
+    if request.METHOD == "GET":
         return render(request, 'form.html')
 
-class Login(CsrfExemptMixin, View):
+class Login(View):
     def get(self, request):
-        return render(request, 'login.html')
+        form = LoginForm()
+        ctx = {'form': form}
+        return render(request, 'login.html', ctx)
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            passwd = form.cleaned_data['password']
+            user = authenticate(request, username=email, password=passwd)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+            else:
+                messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
+                return render(request, 'register.html')
+
+def Logout(request):
+    logout(request)
+    return redirect('/')
 
 class Register(CsrfExemptMixin, View):
     def password_valid(self, passwd):

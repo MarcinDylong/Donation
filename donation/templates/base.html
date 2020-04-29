@@ -11,6 +11,18 @@
   <body>
     <header {% block extra_img %}class="header--main-page" {% endblock %}>
       <nav class="container container--70">
+        {% if user.is_authenticated %}
+        <ul class="nav--actions">
+          <li class="logged-user">
+            Witaj {{ user.first_name }}
+            <ul class="dropdown">
+              <li><a href="#">Profil</a></li>
+              <li><a href="#">Ustawienia</a></li>
+              <li><a href="{% url 'logout' %}">Wyloguj</a></li>
+            </ul>
+          </li>
+        </ul>
+        {% else %}
         <ul class="nav--actions">
           <li>
             <a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a>
@@ -19,6 +31,7 @@
             <a href="{% url 'register' %}" class="btn btn--small btn--highlighted">Załóż konto</a>
           </li>
         </ul>
+        {% endif %}
 
         <ul>
           <li><a href="../" class="btn btn--without-border active">Start</a></li>
@@ -41,14 +54,6 @@
       </nav>
 
       {% block extra_header %}
-{#      <div class="slogan container container--90">#}
-{#        <div class="slogan--item">#}
-{#          <h1>#}
-{#            Zacznij pomagać!<br />#}
-{#            Oddaj niechciane rzeczy w zaufane ręce#}
-{#          </h1>#}
-{#        </div>#}
-{#      </div>#}
       {% endblock %}
     </header>
 
@@ -71,5 +76,15 @@
     </footer>
 
     <script src="{% static 'js/app.js' %}"></script>
+{#    <script>#}
+{#        function dropMenu() {#}
+{#          var x = document.getElementById("Dropdown");#}
+{#          if (x.className.indexOf("hidden") === -1) {#}
+{#            x.className += " w3-show";#}
+{#          } else {#}
+{#            x.className = x.className.replace(" w3-show", "");#}
+{#          }#}
+{#        }#}
+{#    </script>#}
   </body>
 </html>
