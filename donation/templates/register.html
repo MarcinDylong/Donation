@@ -17,19 +17,29 @@
         </div>
         {% endif %}
         <div class="form-group">
-          <input type="text" name="name" placeholder="Imię" />
+            {% for e in form.non_field_errors %}
+            <h1>{{ e }}</h1>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            {{ form.first_name.errors }}
+            {{ form.first_name }}
         </div>
          <div class="form-group">
-          <input type="text" name="surname" placeholder="Nazwisko" />
+            {{ form.last_name.errors }}
+            {{ form.last_name }}
         </div>
         <div class="form-group">
-          <input type="email" name="email" placeholder="Email" />
+            {{ form.email.errors }}
+            {{ form.email }}
         </div>
         <div class="form-group">
-          <input type="password" name="password" placeholder="Hasło" />
+            {{ form.password.errors }}
+            {{ form.password }}
         </div>
         <div class="form-group">
-          <input type="password" name="password2" placeholder="Powtórz hasło" />
+            {{ form.rep_password.errors }}
+            {{ form.rep_password }}
         </div>
         <div class="form-group form-group--buttons">
           <a href="{% url 'login' %}" class="btn btn--without-border">Zaloguj się</a>

@@ -3,13 +3,12 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import TemplateView
 from django.db.models import Sum
 from django.contrib import messages
 from braces.views import CsrfExemptMixin
 
 from .models import Category,Institution,Donation
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
 
 class IndexPage(View):
     def get(self, request):
@@ -68,49 +67,40 @@ def Logout(request):
     logout(request)
     return redirect('/')
 
-class Register(CsrfExemptMixin, View):
-    def password_valid(self, passwd):
-        errors = []
-        if len(passwd) < 8:
-            errors.append('Hasło musi mieć przynajmniej 8 znaków!')
-
-        if not any(char.isdigit() for char in passwd):
-            errors.append('Hasło musi zawierać przynajmniej jedną cyfrę!')
-
-        if not any(char.isupper() for char in passwd):
-            errors.append('Hasło musi zawierać przynajmniej jedną dużą literę!')
-
-        if not any(char.islower() for char in passwd):
-            errors.append('Hasło musi zawierać przynajmniej jedną małą literę!')
-
-        return errors
-
+class Register(View):
     def get(self, request):
-        return render(request, 'register.html')
+        form = RegisterForm()
+        ctx = {'form': form}
+        return render(request, 'register.html', ctx)
 
     def post(self, request):
-        name = request.POST.get('name')
-        surname = request.POST.get('surname')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        password2 = request.POST.get('password2')
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            password = form.cleaned_data['password']
+            User.objects.create_user(first_name=first_name, last_name=last_name, username=email, email=email, password=password)
+            return redirect('login.html')
+        else:
+            ctx = {'form': form}
+            return render(request, 'register.html', ctx)
+        # errors = self.password_valid(password)
+        # if errors:
+        #     for e in errors:
+        #         messages.error(request, e)
+        #     return render(request, 'register.html')
+        #
+        # if password != password2:
+        #     messages.error(request,'Powtórzone hasło nie zgadza się!')
+        #     return render(request, 'register.html')
+        #
+        # if User.objects.filter(email=email).exists():
+        #     messages.error(request, 'Użytkownik o takim e-mailu już istnieje')
+        #     return render(request, 'register.html')
 
-        errors = self.password_valid(password)
-        if errors:
-            for e in errors:
-                messages.error(request, e)
-            return render(request, 'register.html')
-
-        if password != password2:
-            messages.error(request,'Powtórzone hasło nie zgadza się!')
-            return render(request, 'register.html')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Użytkownik o takim e-mailu już istnieje')
-            return render(request, 'register.html')
 
 
-
-        User.objects.create_user(first_name=name, last_name=surname, username=email, email=email, password=password)
-        return render(request, 'login.html')
+        # User.objects.create_user(first_name=name, last_name=surname, username=email, email=email, password=password)
+        # return render(request, 'login.html')
 
