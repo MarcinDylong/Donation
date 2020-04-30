@@ -1,14 +1,15 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.db.models import Sum
 from django.shortcuts import render, redirect
 from django.views import View
-from django.db.models import Sum
-from django.contrib import messages
-from braces.views import CsrfExemptMixin
 
-from .models import Category,Institution,Donation
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, DonationForm
+from .models import Category, Institution, Donation
+
 
 class IndexPage(View):
     def get(self, request):
@@ -17,7 +18,7 @@ class IndexPage(View):
         inst = Donation.objects.values('institution').distinct().count()
         ## Fundację
         fund = Institution.objects.filter(type='F')
-        paginator_f = Paginator(fund,2)
+        paginator_f = Paginator(fund, 2)
         page_f = request.GET.get('page_f')
         fund = paginator_f.get_page(page_f)
         ## Organizacje pozarządowe
@@ -31,15 +32,21 @@ class IndexPage(View):
         page_z = request.GET.get('page_z')
         zblk = paginator_z.get_page(page_z)
         ## Context
-        ctx= {'qty': qty['quantity__sum'], 'inst': inst, 'fund': fund, 'orgp': orgp, 'zblk': zblk}
+        ctx = {'qty': qty['quantity__sum'], 'inst': inst, 'fund': fund, 'orgp': orgp, 'zblk': zblk}
         return render(request, 'index.html', ctx)
 
-# class IndexPage(TemplateView):
-#     template_name = 'index.html'
 
+@login_required(login_url='/login/')
 def AddDonation(request):
-    if request.METHOD == "GET":
-        return render(request, 'form.html')
+    if request.method == 'GET':
+        ctx = {}
+        form = RegisterForm()
+        ctx['form'] = form
+        # Slide 1
+        category = Category.objects.all().order_by('name')
+        ctx['category'] = category
+        return render(request, 'form.html', ctx)
+
 
 class Login(View):
     def get(self, request):
@@ -63,9 +70,11 @@ class Login(View):
                 messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
                 return render(request, 'register.html')
 
+
 def Logout(request):
     logout(request)
     return redirect('/')
+
 
 class Register(View):
     def get(self, request):
@@ -80,27 +89,9 @@ class Register(View):
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             password = form.cleaned_data['password']
-            User.objects.create_user(first_name=first_name, last_name=last_name, username=email, email=email, password=password)
+            User.objects.create_user(first_name=first_name, last_name=last_name, username=email, email=email,
+                                     password=password)
             return redirect('login.html')
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)
-        # errors = self.password_valid(password)
-        # if errors:
-        #     for e in errors:
-        #         messages.error(request, e)
-        #     return render(request, 'register.html')
-        #
-        # if password != password2:
-        #     messages.error(request,'Powtórzone hasło nie zgadza się!')
-        #     return render(request, 'register.html')
-        #
-        # if User.objects.filter(email=email).exists():
-        #     messages.error(request, 'Użytkownik o takim e-mailu już istnieje')
-        #     return render(request, 'register.html')
-
-
-
-        # User.objects.create_user(first_name=name, last_name=surname, username=email, email=email, password=password)
-        # return render(request, 'login.html')
-

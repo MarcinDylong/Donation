@@ -1,6 +1,6 @@
 .idea
 .vscode
-venv
+proj_env
 env
 __pycache__
 *.pyc
