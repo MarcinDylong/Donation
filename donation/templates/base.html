@@ -50,6 +50,11 @@
           <li>
             <a href="#contact" class="btn btn--without-border">Kontakt</a>
           </li>
+          {% if user.is_superuser %}
+          <li>
+            <a href="/admin" class="btn btn--without-border">Admin</a>
+          </li>
+          {% endif %}
         </ul>
       </nav>
 
