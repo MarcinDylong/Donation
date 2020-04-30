@@ -56,22 +56,18 @@ class DonationForm(forms.ModelForm):
     institution = forms.ModelMultipleChoiceField(label='Instytucje',
                                                 queryset=Institution.objects.all().order_by('name'),
                                                 widget=forms.Select())
-    address = forms.CharField(label='Adres',widget=forms.Textarea(attrs={'placeholer':'Adres',
-                                                                         'rows': 1, 'cols': 40,
-                                                                         'style': 'height: 1em;'}))
+    address = forms.CharField(label='Adres',widget=forms.TextInput(attrs={"type": "text", "name": "address"}))
     phone_number = forms.CharField(label='Numer telefonu', max_length= 16,
-                                   widget=forms.TextInput(attrs={'placeholder':'Numer telefonu'}))
+                                   widget=forms.TextInput(attrs={"type": "phone", "name": "phone"}))
     city = forms.CharField(label='Miasto', max_length=32,
-                           widget=forms.TextInput(attrs={'placeholder':'Miasto'}))
+                           widget=forms.TextInput(attrs={"type": "text", "name": "city"}))
     zip_code = forms.CharField(label='Kod pocztowy', max_length=8,
-                               widget=forms.TextInput(attrs={'placeholder':'Kod pocztowy'}))
-    pick_up_date = forms.DateField(label='Data odbioru', widget=forms.DateInput(attrs={'placeholder':'Data odbioru'}))
+                               widget=forms.TextInput(attrs={"type": "text", "name": "postcode"}))
+    pick_up_date = forms.DateField(label='Data odbioru', widget=forms.DateInput(attrs={"type": "date", "name": "data"}))
     pick_up_time = forms.TimeField(label='Godzina odbioru',
-                                   widget=forms.TimeInput(attrs={'placeholder':'Godzina odbioru'}))
+                                   widget=forms.TimeInput(attrs={"type": "time", "name": "time"}))
     notes = forms.CharField(label='Uwagi do odbioru',
-                            widget=forms.Textarea(attrs={'placeholder':'Uwagi do odbioru',
-                                                         'row': 4, 'column':40,
-                                                         'style': 'height: 1em;'}))
+                            widget=forms.Textarea(attrs={"name": "more_info", "rows": "5"}))
 
     class Meta:
         model = Donation
