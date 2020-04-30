@@ -40,11 +40,11 @@ class IndexPage(View):
 def AddDonation(request):
     if request.method == 'GET':
         ctx = {}
-        form = RegisterForm()
+        form = DonationForm()
         ctx['form'] = form
         # Slide 1
-        category = Category.objects.all().order_by('name')
-        ctx['category'] = category
+        # category = Category.objects.all().order_by('name')
+        # ctx['category'] = category
         return render(request, 'form.html', ctx)
 
 

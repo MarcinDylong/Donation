@@ -50,7 +50,9 @@ class DonationForm(forms.ModelForm):
                                                 queryset=Category.objects.all().order_by('name'),
                                                 widget=forms.Select())
     quantity = forms.IntegerField(label='Ilość worków',
-                                  widget=forms.NumberInput(attrs={'placeholder': 'Liczba 60l worków:'}))
+                                  widget=forms.NumberInput(attrs={'placeholder': 'Liczba 60l worków:',
+                                                                  "type": "number", "name": "bags",
+                                                                  "step": "1", "min": "1"}))
     institution = forms.ModelMultipleChoiceField(label='Instytucje',
                                                 queryset=Institution.objects.all().order_by('name'),
                                                 widget=forms.Select())
