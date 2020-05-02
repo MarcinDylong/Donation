@@ -47,6 +47,13 @@ def AddDonation(request):
         return render(request, 'form.html', ctx)
 
 
+class UserProfile(View):
+    def get(self, request):
+        user = request.user
+        user = User.objects.get(pk=user.id)
+        ctx = {'user': user}
+        return render(request, 'user-profile.html', ctx)
+
 class Login(View):
     def get(self, request):
         form = LoginForm()

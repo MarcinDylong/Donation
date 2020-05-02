@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from donation.views import IndexPage, AddDonation, Login, Register, Logout
+from donation.views import IndexPage, AddDonation, Login, Register, Logout, UserProfile
 
 
 urlpatterns = [
@@ -25,6 +25,6 @@ urlpatterns = [
     path('add_donation/', AddDonation, name="add_donation"),
     path('login/', Login.as_view(), name="login"),
     path('register/', Register.as_view(), name="register"),
-    path('logout/', Logout, name='logout')
-
+    path('logout/', Logout, name='logout'),
+    path('user_profile/', UserProfile.as_view(), name='user_profile')
 ]
