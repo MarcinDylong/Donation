@@ -27,6 +27,9 @@ class Institution(models.Model):
     def __str__(self):
         return f'{self.get_type_display()}: {self.name}'
 
+    def desc(self):
+        return {self.description}
+
 
 class Donation(models.Model):
     quantity = models.SmallIntegerField()

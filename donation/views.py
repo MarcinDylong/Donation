@@ -42,6 +42,8 @@ def AddDonation(request):
         ctx = {}
         form = DonationForm()
         ctx['form'] = form
+        inst = Institution.objects.all()
+        ctx['inst'] = inst
         return render(request, 'form.html', ctx)
 
 
@@ -65,7 +67,10 @@ class Login(View):
                 return render(request, 'login.html', {'form': form})
             else:
                 messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
-                return render(request, 'register.html')
+                request.session['email'] = email
+                ctx = {'form': RegisterForm()}
+                # return render(request, 'register.html', ctx)
+                return redirect('/register/')
 
 
 def Logout(request):

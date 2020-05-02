@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.http import request
 
 from .models import Category, Donation, Institution
 
@@ -16,7 +18,9 @@ class LoginForm(forms.ModelForm):
 
 
 class RegisterForm(forms.ModelForm):
-    email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}),
+                             validators=[validate_email])
+
     first_name = forms.CharField(label='First name:', widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
     last_name = forms.CharField(label='Last name:', widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
     password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
@@ -25,7 +29,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'password')
+        fields = ('first_name', 'last_name', 'email', 'password', 'is_superuser')
 
     def clean(self, passwordValidation=None):
         # Automatically called by form.is_valid()
@@ -54,10 +58,11 @@ class DonationForm(forms.ModelForm):
                                                                   "type": "number", "name": "bags",
                                                                   "step": "1", "min": "1"}))
     institution = forms.ModelMultipleChoiceField(label='Instytucje',
-                                                queryset=Institution.objects.all().order_by('name'),
-                                                widget=forms.Select())
-    address = forms.CharField(label='Adres',widget=forms.TextInput(attrs={"type": "text", "name": "address"}))
-    phone_number = forms.CharField(label='Numer telefonu', max_length= 16,
+                                                 queryset=Institution.objects.all().order_by('name'),
+                                                 # .only('name','description','categories'),
+                                                 widget=forms.Select())
+    address = forms.CharField(label='Adres', widget=forms.TextInput(attrs={"type": "text", "name": "address"}))
+    phone_number = forms.CharField(label='Numer telefonu', max_length=16,
                                    widget=forms.TextInput(attrs={"type": "phone", "name": "phone"}))
     city = forms.CharField(label='Miasto', max_length=32,
                            widget=forms.TextInput(attrs={"type": "text", "name": "city"}))
