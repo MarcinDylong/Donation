@@ -30,11 +30,16 @@
                             </div>
                         </li>
                         <br>
-                        <li>
                             <div class="form-group form-group--inline">
-                                <label>Liczba darowizn: </label>
+                                <label>Lista darowizn: </label>
                             </div>
-                        </li>
+                        <ul>
+                            {% for d in don %}
+                                <li>
+                                    {{ d }}
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </ul>
                 </div>
             </div>

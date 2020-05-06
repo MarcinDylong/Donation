@@ -253,9 +253,4 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 
-  /**
-   * Donation form
-   */
-
-
 });

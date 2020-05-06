@@ -60,14 +60,12 @@
                 <!-- STEP 1: class .active is switching steps -->
                 <div data-step="1" class="active">
                     <h3>Zaznacz co chcesz oddać:</h3>
-                    {% for c in form.categories %}
+                    {% for c in form.categories.field.queryset %}
                         <div class="form-group form-group--checkbox">
                             <label>
                                 <input type="checkbox" name="categories" value="{{ c.id }}"/>
                                 <span class="checkbox"></span>
-                                <span class="description">
-                    {{ c }}
-                </span>
+                                <span class="description"> {{ c.name }} </span>
                             </label>
                         </div>
                     {% endfor %}
@@ -98,19 +96,15 @@
                 <div data-step="3">
                     <h3>Wybierz organizacje, której chcesz pomóc:</h3>
                     {% for i in form.institution.field.queryset %}
-
-                        <div class="form-group form-group--checkbox">
+                        <div class="category-filter form-group form-group--checkbox" style ="display: none"
+                             data-categories='[{% for cat in i.categories.all %}"{{ cat.id }}" {% if not forloop.last %},{% endif %} {% endfor %}]'>
                             <label>
-                                <input type="radio" name="organization" value="old"/>
+                                <input type="radio" name="organization" value="{{ i.id }}"/>
                                 <span class="checkbox radio"></span>
                                 <span class="description">
-                      <div class="title">{{ i }}</div>
-                      <div class="subtitle">{{ i.description }}</div>
-                                    {% for cat in i.categories.all %}
-                                        <div id="categories" class="subtitle" style="display: none"
-                                             value="{{ cat.id }}">{{ cat }}</div>
-                                    {% endfor %}
-                    </span>
+                                  <div class="title">{{ i }}</div>
+                                  <div class="subtitle">{{ i.description }}</div>
+                                </span>
                             </label>
                         </div>
                     {% endfor %}
@@ -130,19 +124,15 @@
                             <h4>Adres odbioru</h4>
                             <div class="form-group form-group--inline">
                                 <label> Ulica {{ form.address }} </label>
-                                {#                  <label> Ulica <input type="text" name="address" /> </label>#}
                             </div>
-
                             <div class="form-group form-group--inline">
                                 <label> Miasto {{ form.city }}</label>
                             </div>
-
                             <div class="form-group form-group--inline">
                                 <label>
                                     Kod pocztowy {{ form.zip_code }}
                                 </label>
                             </div>
-
                             <div class="form-group form-group--inline">
                                 <label>
                                     Numer telefonu {{ form.phone_number }}
@@ -184,16 +174,13 @@
                             <ul>
                                 <li>
                                     <span class="icon icon-bag"></span>
-                                    <span class="summary--text"
-                                    >4 worki ubrań w dobrym stanie dla dzieci</span
-                                    >
+{#                                    <span class="summary--text">4 worki ubrań w dobrym stanie dla dzieci</span>#}
+                                    <span class="summary--text" id="qty-cat"></span>
                                 </li>
 
                                 <li>
                                     <span class="icon icon-hand"></span>
-                                    <span class="summary--text"
-                                    >Dla fundacji "Mam marzenie" w Warszawie</span
-                                    >
+                                    <span class="summary--text" id="inst"></span>
                                 </li>
                             </ul>
                         </div>
@@ -202,19 +189,19 @@
                             <div class="form-section--column">
                                 <h4>Adres odbioru:</h4>
                                 <ul>
-                                    <li>Prosta 51</li>
-                                    <li>Warszawa</li>
-                                    <li>99-098</li>
-                                    <li>123 456 789</li>
+                                    <li id="street"></li>
+                                    <li id="city"></li>
+                                    <li id="zip_code"></li>
+                                    <li id="phone_number"></li>
                                 </ul>
                             </div>
 
                             <div class="form-section--column">
                                 <h4>Termin odbioru:</h4>
                                 <ul>
-                                    <li>13/12/2018</li>
-                                    <li>15:40</li>
-                                    <li>Brak uwag</li>
+                                    <li id="pick_up_date"></li>
+                                    <li id="pick_up_time"></li>
+                                    <li id="notes"></li>
                                 </ul>
                             </div>
                         </div>

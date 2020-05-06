@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
     <header {% block extra_img %}class="header--main-page" {% endblock %}>
@@ -81,15 +82,6 @@
     </footer>
 
     <script src="{% static 'js/app.js' %}"></script>
-{#    <script>#}
-{#        function dropMenu() {#}
-{#          var x = document.getElementById("Dropdown");#}
-{#          if (x.className.indexOf("hidden") === -1) {#}
-{#            x.className += " w3-show";#}
-{#          } else {#}
-{#            x.className = x.className.replace(" w3-show", "");#}
-{#          }#}
-{#        }#}
-{#    </script>#}
+    <script src="{% static 'js/form.js' %}"></script>
   </body>
 </html>

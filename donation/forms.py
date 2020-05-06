@@ -52,15 +52,14 @@ class RegisterForm(forms.ModelForm):
 class DonationForm(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(label='Kategorie',
                                                 queryset=Category.objects.all().order_by('name'),
-                                                widget=forms.Select())
+                                                widget=forms.SelectMultiple())
     quantity = forms.IntegerField(label='Ilość worków',
                                   widget=forms.NumberInput(attrs={'placeholder': 'Liczba 60l worków:',
                                                                   "type": "number", "name": "bags",
                                                                   "step": "1", "min": "1"}))
-    institution = forms.ModelMultipleChoiceField(label='Instytucje',
-                                                 queryset=Institution.objects.all().order_by('name'),
-                                                 # .only('name','description','categories'),
-                                                 widget=forms.Select())
+    institution = forms.ModelChoiceField(label='Instytucje',
+                                         queryset=Institution.objects.all().order_by('name'),
+                                         widget=forms.Select())
     address = forms.CharField(label='Adres', widget=forms.TextInput(attrs={"type": "text", "name": "address"}))
     phone_number = forms.CharField(label='Numer telefonu', max_length=16,
                                    widget=forms.TextInput(attrs={"type": "phone", "name": "phone"}))
@@ -72,7 +71,7 @@ class DonationForm(forms.ModelForm):
     pick_up_time = forms.TimeField(label='Godzina odbioru',
                                    widget=forms.TimeInput(attrs={"type": "time", "name": "time"}))
     notes = forms.CharField(label='Uwagi do odbioru',
-                            widget=forms.Textarea(attrs={"name": "more_info", "rows": "5"}))
+                            widget=forms.TextInput(attrs={"name": "more_info", "rows": "5"}))
 
     class Meta:
         model = Donation
