@@ -38,7 +38,6 @@ $(document).ready(function () {
             $.each($('.category-filter'), function() {
                 if($(this).find('input').is(':checked')) {
                     inst = $(this).find('div.title')[0].innerText;
-                    // console.log($(this).find('div.title')[0].innerText);
                 }
             })
             $('#qty-cat').text(bagsCat);

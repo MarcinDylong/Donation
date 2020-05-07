@@ -70,7 +70,7 @@ class DonationForm(forms.ModelForm):
     pick_up_date = forms.DateField(label='Data odbioru', widget=forms.DateInput(attrs={"type": "date", "name": "data"}))
     pick_up_time = forms.TimeField(label='Godzina odbioru',
                                    widget=forms.TimeInput(attrs={"type": "time", "name": "time"}))
-    notes = forms.CharField(label='Uwagi do odbioru',
+    notes = forms.CharField(label='Uwagi do odbioru', required=False,
                             widget=forms.TextInput(attrs={"name": "more_info", "rows": "5"}))
 
     class Meta:

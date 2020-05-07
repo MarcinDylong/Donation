@@ -42,3 +42,4 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    notes = models.TextField(blank=True, null=True)

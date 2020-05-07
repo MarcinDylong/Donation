@@ -55,8 +55,7 @@
 
         <div class="form--steps-container">
             <div class="form--steps-counter">Krok <span>1</span>/5</div>
-
-            <form action="form-confirmation.html" method="post"> {% csrf_token %}
+            <form action="#" method="post"> {% csrf_token %}
                 <!-- STEP 1: class .active is switching steps -->
                 <div data-step="1" class="active">
                     <h3>Zaznacz co chcesz oddać:</h3>
@@ -99,7 +98,7 @@
                         <div class="category-filter form-group form-group--checkbox" style ="display: none"
                              data-categories='[{% for cat in i.categories.all %}"{{ cat.id }}" {% if not forloop.last %},{% endif %} {% endfor %}]'>
                             <label>
-                                <input type="radio" name="organization" value="{{ i.id }}"/>
+                                <input type="radio" name="institution" value="{{ i.id }}"/>
                                 <span class="checkbox radio"></span>
                                 <span class="description">
                                   <div class="title">{{ i }}</div>

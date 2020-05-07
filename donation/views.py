@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
@@ -39,13 +40,23 @@ class IndexPage(View):
 @login_required(login_url='/login/')
 def AddDonation(request):
     if request.method == 'GET':
-        ctx = {}
-        form = DonationForm()
-        ctx['form'] = form
-        inst = Institution.objects.all()
-        ctx['inst'] = inst
+        ctx = {'form': DonationForm, 'inst': Institution.objects.all()}
         return render(request, 'form.html', ctx)
 
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            try:
+                don = form.save()
+                don.user = request.user
+                don.save()
+            except Exception as e:
+                messages.error(request, f'Błąd: {e}')
+                return render(request, 'error.html')
+            return render(request, 'form-confirmation.html')
+        else:
+            messages.error(request, f'Błąd: {form._errors}')
+            return render(request, 'error.html')
 
 class UserProfile(View):
     def get(self, request):
