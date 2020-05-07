@@ -43,3 +43,8 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     notes = models.TextField(blank=True, null=True)
+    is_taken = models.BooleanField(null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Darowizna dla {self.institution.name}'

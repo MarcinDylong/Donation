@@ -62,9 +62,15 @@ class UserProfile(View):
     def get(self, request):
         user = request.user
         user_id = User.objects.get(pk=user.id)
-        don = Donation.objects.filter(user=user).order_by('pick_up_date')
+        don = Donation.objects.filter(user=user).order_by('-is_taken', 'pick_up_date', 'date_added')
         ctx = {'user': user_id, 'don': don}
         return render(request, 'user-profile.html', ctx)
+
+class DonationDetails(View):
+    def get(self, request, id):
+        don = Donation.objects.filter(pk=id)
+        ctx = {'don': don}
+        return render(request, 'donation-details.html', ctx)
 
 class Login(View):
     def get(self, request):

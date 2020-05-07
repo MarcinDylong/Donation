@@ -33,13 +33,49 @@
                             <div class="form-group form-group--inline">
                                 <label>Lista darowizn: </label>
                             </div>
-                        <ul>
+                            <br>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Benificjent</th>
+                                <th>Odebrane</th>
+                                <th>Data odbioru</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {% for d in don %}
-                                <li>
-                                    {{ d }}
-                                </li>
+                                {% if d.is_taken is True %}
+                                <tr>
+                                    <td>
+                                        <a style="color: grey" href="{% url 'donation_details' d.id %}">
+                                            {{ d.institution.name }}
+                                        </a>
+                                    </td>
+                                    <td align="center" style="color: grey">
+                                        Tak
+                                    </td>
+                                    <td align="center" style="color: grey">
+                                        {{ d.pick_up_date }}, {{ d.pick_up_time }}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td>
+                                        <a style="color: black" href="{% url 'donation_details' d.id %}">
+                                            {{ d.institution.name }}
+                                        </a>
+                                    </td>
+                                    <td align="center">
+                                        Nie
+                                    </td>
+                                    <td align="center">
+                                        {{ d.pick_up_date }}, {{ d.pick_up_time }}
+                                    </td>
+                                </tr>
+                                {% endif %}
                             {% endfor %}
-                        </ul>
+                        </tbody>
+                    </table>
                     </ul>
                 </div>
             </div>

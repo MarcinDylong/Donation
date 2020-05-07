@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Szczegóły darowizny {% endblock %}
+{% block extra_img %} class="header--form-page" {% endblock %}
+{% block extra_header %}
+    <div class="slogan container container--90">
+        <div class="slogan--item">
+            <h1>
+                Szczegóły darowizny
+            </h1>
+            <div class="form-section form-section--columns">
+                <div class="form-section--columns" style="font-size: 20px">
+                    {% for d in don %}
+                        <table>
+                            <tr>
+                               <th align="left">
+                                   Beneficjent
+                               </th>
+                               <td>
+                                   {{ d.institution }}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Kategorię
+                               </th>
+                               <td>
+                                   {% for cat in d.categories.all %}
+                                       {{ cat }}{% if not forloop.last %},{% endif %}
+                                   {% endfor %}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Ilość:
+                               </th>
+                               <td>
+                                   {{ d.quantity }}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Adres odbioru:
+                               </th>
+                               <td>
+                                   {{ d.address }}, {{ d.city }}, {{ d.zip_code }}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Numer telefonu:
+                               </th>
+                               <td>
+                                   {{ d.phone_number }}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Odbiór:
+                               </th>
+                               <td>
+                                   {{ d.pick_up_date }}, {{ d.pick_up_time }}
+                               </td>
+                            </tr><tr>
+                               <th align="left">
+                                   Uwagi:
+                               </th>
+                               <td>
+                                   {{ d.notes }}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Odebrano:
+                               </th>
+                               <td>
+                                   {% if d.is_taken is True %} Tak {% else %} Nie {% endif %}
+                               </td>
+                            </tr>
+                            <tr>
+                               <th align="left">
+                                   Dodano wpis:
+                               </th>
+                               <td>
+                                   {{ d.date_added }}
+                               </td>
+                            </tr>
+                        </table>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_footer %}
+    <div id="contact" class="contact">
+        <h2>Skontaktuj się z nami</h2>
+        <h3>Formularz kontaktowy</h3>
+        <form class="form--contact">
+            <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>
+            <div class="form-group form-group--50"><input type="text" name="surname" placeholder="Nazwisko"/></div>
+
+            <div class="form-group"><textarea name="message" placeholder="Wiadomość" rows="1"></textarea></div>
+
+            <button class="btn" type="submit">Wyślij</button>
+        </form>
+    </div>
+{% endblock %}
