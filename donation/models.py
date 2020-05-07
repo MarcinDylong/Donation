@@ -45,6 +45,7 @@ class Donation(models.Model):
     notes = models.TextField(blank=True, null=True)
     is_taken = models.BooleanField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'Darowizna dla {self.institution.name}'

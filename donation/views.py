@@ -59,11 +59,32 @@ def AddDonation(request):
             return render(request, 'error.html')
 
 class UserProfile(View):
+    def change_don(self,id):
+        don_chan = Donation.objects.get(pk=id)
+        if don_chan.is_taken:
+            don_chan.is_taken = False
+
+            don_chan.save()
+        else:
+            don_chan.is_taken = True
+            don_chan.save()
+
+
+
     def get(self, request):
         user = request.user
         user_id = User.objects.get(pk=user.id)
-        don = Donation.objects.filter(user=user).order_by('-is_taken', 'pick_up_date', 'date_added')
+        don = Donation.objects.filter(user=user).order_by('is_taken', 'pick_up_date', 'date_added')
         ctx = {'user': user_id, 'don': don}
+        return render(request, 'user-profile.html', ctx)
+
+    def post(self, request):
+        user = request.user
+        user_id = User.objects.get(pk=user.id)
+        don_id = request.POST.get('pick_up')
+        self.change_don(don_id)
+        don = Donation.objects.filter(user=user).order_by('is_taken', 'pick_up_date', 'date_added')
+        ctx = {'user': user_id, 'don': don, 'don_id':don_id}
         return render(request, 'user-profile.html', ctx)
 
 class DonationDetails(View):

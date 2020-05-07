@@ -75,17 +75,21 @@
                                    Odebrano:
                                </th>
                                <td>
-                                   {% if d.is_taken is True %} Tak {% else %} Nie {% endif %}
+                                   {% if d.is_taken is True %} Tak
                                </td>
                             </tr>
                             <tr>
                                <th align="left">
-                                   Dodano wpis:
+                                   Odebrano:
                                </th>
                                <td>
-                                   {{ d.date_added }}
+                                   {{ d.date_update }}
                                </td>
                             </tr>
+                               {% else %} Nie
+                                  </td>
+                            </tr>
+                                   {% endif %}
                         </table>
                     {% endfor %}
                 </div>

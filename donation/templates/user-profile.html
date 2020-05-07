@@ -54,8 +54,14 @@
                                     <td align="center" style="color: grey">
                                         Tak
                                     </td>
-                                    <td align="center" style="color: grey">
+                                    <td style="color: grey">
                                         {{ d.pick_up_date }}, {{ d.pick_up_time }}
+                                    </td>
+                                    <td>
+                                        <form action="#" method="post"> {% csrf_token %}
+                                            <input name="pick_up" type="hidden" value="{{ d.id }}">
+                                            <input type="submit" class="btn--small" value="     Cofnij    ">
+                                        </form>
                                     </td>
                                 </tr>
                                 {% else %}
@@ -68,10 +74,17 @@
                                     <td align="center">
                                         Nie
                                     </td>
-                                    <td align="center">
+                                    <td>
                                         {{ d.pick_up_date }}, {{ d.pick_up_time }}
                                     </td>
+                                    <td>
+                                        <form action="#" method="post"> {% csrf_token %}
+                                            <input name="pick_up" type="hidden" value="{{ d.id }}">
+                                            <input type="submit" class="btn--small" value="Odebrane!">
+                                        </form>
+                                    </td>
                                 </tr>
+
                                 {% endif %}
                             {% endfor %}
                         </tbody>
