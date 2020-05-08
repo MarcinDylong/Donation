@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -20,7 +21,6 @@ class LoginForm(forms.ModelForm):
 class RegisterForm(forms.ModelForm):
     email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}),
                              validators=[validate_email])
-
     first_name = forms.CharField(label='First name:', widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
     last_name = forms.CharField(label='Last name:', widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
     password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
@@ -31,7 +31,7 @@ class RegisterForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'email', 'password', 'is_superuser')
 
-    def clean(self, passwordValidation=None):
+    def clean(self):
         # Automatically called by form.is_valid()
         # ...can also use 'clean_FIELDNAME()' for individual fields
 
@@ -76,3 +76,47 @@ class DonationForm(forms.ModelForm):
     class Meta:
         model = Donation
         exclude = ('user',)
+
+
+class ChangePasswordForm(forms.Form):
+    user_id = forms.IntegerField(widget=forms.HiddenInput)
+    old_password = forms.CharField(label='Old password', widget=forms.PasswordInput(attrs={'placeholder': 'Stare hasło'}))
+    new_password = forms.CharField(label='New password', widget=forms.PasswordInput(attrs={'placeholder': 'Nowe hasło'}))
+    rep_password = forms.CharField(label='Repeat new password',
+                                   widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz hasło'}))
+
+    # class Meta:
+    #     model = User
+    #     fields = ('password','id')
+
+    def clean(self):
+        user_id = self.cleaned_data['user_id']
+        old_password = self.cleaned_data['old_password']
+        new_password = self.cleaned_data['new_password']
+        rep_password = self.cleaned_data['rep_password']
+
+        user = User.objects.get(pk=user_id)
+
+        if user is None:
+            raise forms.ValidationError('Użytkownik nie istnieje')
+
+        if not authenticate(username=user.username, password=old_password):
+            raise forms.ValidationError('Nie poprawne stare hasło')
+
+        if new_password != rep_password:
+            raise forms.ValidationError('Powtórzone hasło się nie zgadza!')
+
+        validate_password(new_password)
+
+
+class SettingForm(forms.ModelForm):
+    email = forms.EmailField(label='E-mail:', required=False, widget=forms.TextInput(attrs={'placeholder': 'Email'}),
+                             validators=[validate_email])
+    first_name = forms.CharField(label='First name:', required= False,
+                                 widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
+    last_name = forms.CharField(label='Last name:', required=False,
+                                widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')

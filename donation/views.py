@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 
-from .forms import LoginForm, RegisterForm, DonationForm
+from .forms import LoginForm, RegisterForm, DonationForm, ChangePasswordForm, SettingForm
 from .models import Category, Institution, Donation
 
 
@@ -63,13 +63,10 @@ class UserProfile(View):
         don_chan = Donation.objects.get(pk=id)
         if don_chan.is_taken:
             don_chan.is_taken = False
-
             don_chan.save()
         else:
             don_chan.is_taken = True
             don_chan.save()
-
-
 
     def get(self, request):
         user = request.user
@@ -80,12 +77,56 @@ class UserProfile(View):
 
     def post(self, request):
         user = request.user
-        user_id = User.objects.get(pk=user.id)
+        usr = User.objects.get(pk=user.id)
         don_id = request.POST.get('pick_up')
         self.change_don(don_id)
         don = Donation.objects.filter(user=user).order_by('is_taken', 'pick_up_date', 'date_added')
-        ctx = {'user': user_id, 'don': don, 'don_id':don_id}
+        ctx = {'user': usr, 'don': don}
         return render(request, 'user-profile.html', ctx)
+
+class Settings(View):
+    def get(self, request):
+        user = request.user
+        user_id = User.objects.get(pk=user.id)
+        cp_form = ChangePasswordForm(initial={'user_id': user.id})
+        st_form = SettingForm(initial={}, instance=user_id)
+        ctx = {'user': user_id, 'cp_form': cp_form, 'st_form':st_form}
+        return render(request, 'user-settings.html', ctx)
+
+    def post(self, request):
+        user = request.user
+        usr = User.objects.get(pk=user.id)
+
+        if 'st_btn' in request.POST:
+            st_form = SettingForm(request.POST)
+            if st_form.is_valid():
+                usr.first_name = st_form.cleaned_data['first_name']
+                usr.last_name = st_form.cleaned_data['last_name']
+                new_mail = st_form.cleaned_data['email']
+                if (usr.email !=  new_mail):
+                    if (User.objects.filter(email=new_mail).exists()):
+                        messages.error(request, 'Użytkownik o takim mailu już istnieje!')
+                        return render(request,'user-settings.html', {'st_form': st_form,
+                                                                     'cp_form': ChangePasswordForm(
+                                                                         initial={'user_id': user.id})})
+                    else:
+                        usr.email = st_form.cleaned_data['email']
+                        usr.username = st_form.cleaned_data['email']
+                usr.save()
+                return redirect('/user_profile/')
+        elif 'cp_btn' in request.POST:
+            cp_form = ChangePasswordForm(request.POST)
+            if cp_form.is_valid():
+                usr.set_password(cp_form.cleaned_data['new_password'])
+                usr.save()
+                return redirect('/login/')
+            else:
+                messages.error(request,'Błąd')
+                return render(request, 'user-settings.html', {'st_form': SettingForm(initial={}, instance=usr),
+                                                              'cp_form': cp_form})
+        else:
+            redirect('/settings/')
+
 
 class DonationDetails(View):
     def get(self, request, id):
@@ -139,7 +180,7 @@ class Register(View):
             password = form.cleaned_data['password']
             User.objects.create_user(first_name=first_name, last_name=last_name, username=email, email=email,
                                      password=password)
-            return redirect('login.html')
+            return redirect('/login')
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)

@@ -41,7 +41,7 @@ class Donation(models.Model):
     zip_code = models.CharField(max_length=8)
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     notes = models.TextField(blank=True, null=True)
     is_taken = models.BooleanField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)

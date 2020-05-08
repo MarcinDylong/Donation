@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Ustawienia {% endblock %}
+{% block extra_img %} class="header--form-page" {% endblock %}
+{% block extra_header %}
+    <div class="slogan container container--70">
+        {% if messages %}
+        <div class="slogan container">
+            <div class="form-section form-section--columns">
+            {% for m in messages %}
+              <h1>{{ m }}<h1>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="slogan--item">
+            <h1> Zmień dane </h1>
+            <div class="form-section form-section--columns">
+                <div class="form-section--columns" style="font-size: 20px">
+                    <form method="post" action="#"> {% csrf_token %}
+                        <div class="form-group">
+                            {% for e in st_form.non_field_errors %}
+                            {{ e }}
+                            {% endfor %}
+                        </div>
+                        <div class="form-group form-group--inline">
+                            {{ st_form.first_name.errors }}
+                            {{ st_form.first_name }}
+                        </div>
+                        <div class="form-group form-group--inline">
+                            {{ st_form.last_name.errors }}
+                            {{ st_form.last_name }}
+                        </div>
+                        <div class="form-group form-group--inline">
+                            {{ st_form.email.errors }}
+                            {{ st_form.email }}
+                        </div>
+                        <div class="form-group form-group--buttons">
+                            <button class="btn" name='st_btn' type="submit">Zmień</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="slogan--item">
+            <h1> Zmień hasło</h1>
+              <form action="#" method="POST">{% csrf_token %}
+                <div class="form-group">
+                    {% for e in cp_form.non_field_errors %}
+                    {{ e }} <br>
+                    {% endfor %}
+                    {{ cp_form.user_id.errors }}
+                </div>
+                <div class="form-group" style="display: none">
+                    {{ cp_form.user_id }}
+                </div>
+                <div class="form-group">
+                    {{ cp_form.old_password.errors }}
+                    {{ cp_form.old_password }}
+                </div>
+                 <div class="form-group">
+                    {{ cp_form.new_password.errors }}
+                    {{ cp_form.new_password}}
+                </div>
+                <div class="form-group">
+                    {{ cp_form.rep_password.errors }}
+                    {{ cp_form.rep_password }}
+                </div>
+                <div class="form-group form-group--buttons">
+                  <button class="btn" name='cp_btn' type="submit">Zmień</button>
+                </div>
+              </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_footer %}
+    <div id="contact" class="contact">
+        <h2>Skontaktuj się z nami</h2>
+        <h3>Formularz kontaktowy</h3>
+        <form class="form--contact">
+            <div class="form-group form-group--50"><input type="text" name="name" placeholder="Imię"/></div>
+            <div class="form-group form-group--50"><input type="text" name="surname" placeholder="Nazwisko"/></div>
+
+            <div class="form-group"><textarea name="message" placeholder="Wiadomość" rows="1"></textarea></div>
+
+            <button class="btn" type="submit">Wyślij</button>
+        </form>
+    </div>
+{% endblock %}

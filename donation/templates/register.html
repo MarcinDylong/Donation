@@ -8,7 +8,7 @@
 {% block content %}
     <section class="login-page">
       <h2>Załóż konto</h2>
-      <form action="" method="POST">{% csrf_token %}
+      <form action="#" method="POST">{% csrf_token %}
         {% if messages %}
         <div class="form-group">
         {% for m in messages %}
@@ -31,7 +31,7 @@
         </div>
         <div class="form-group">
             {{ form.email.errors }}
-            {{ form.email.initial.email }}
+            {{ form.email }}
         </div>
         <div class="form-group">
             {{ form.password.errors }}
