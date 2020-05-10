@@ -109,14 +109,22 @@ class ChangePasswordForm(forms.Form):
         validate_password(new_password)
 
 
-class SettingForm(forms.ModelForm):
+class SettingForm(forms.Form):
+
     email = forms.EmailField(label='E-mail:', required=False, widget=forms.TextInput(attrs={'placeholder': 'Email'}),
                              validators=[validate_email])
     first_name = forms.CharField(label='First name:', required= False,
                                  widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
     last_name = forms.CharField(label='Last name:', required=False,
                                 widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
+    password = forms.CharField(label='Password',
+                                   widget=forms.PasswordInput(attrs={'placeholder': 'Potwierdź zmiany hasłem'}))
+    user_id = forms.IntegerField(widget=forms.HiddenInput)
 
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'email')
+    def clean(self):
+        user_id = self.cleaned_data['user_id']
+        password = self.cleaned_data['password']
+
+        user = User.objects.get(pk=user_id)
+        if not authenticate(username=user.username, password=password):
+            raise forms.ValidationError('Nie poprawne hasło')

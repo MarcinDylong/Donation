@@ -58,8 +58,9 @@ def AddDonation(request):
             messages.error(request, f'Błąd: {form._errors}')
             return render(request, 'error.html')
 
+
 class UserProfile(View):
-    def change_don(self,id):
+    def change_don(self, id):
         don_chan = Donation.objects.get(pk=id)
         if don_chan.is_taken:
             don_chan.is_taken = False
@@ -84,13 +85,15 @@ class UserProfile(View):
         ctx = {'user': usr, 'don': don}
         return render(request, 'user-profile.html', ctx)
 
+
 class Settings(View):
     def get(self, request):
         user = request.user
-        user_id = User.objects.get(pk=user.id)
+        usr = User.objects.get(pk=user.id)
         cp_form = ChangePasswordForm(initial={'user_id': user.id})
-        st_form = SettingForm(initial={}, instance=user_id)
-        ctx = {'user': user_id, 'cp_form': cp_form, 'st_form':st_form}
+        st_form = SettingForm(
+            initial={'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name, 'user_id': user.id})
+        ctx = {'user': usr, 'cp_form': cp_form, 'st_form': st_form}
         return render(request, 'user-settings.html', ctx)
 
     def post(self, request):
@@ -103,12 +106,12 @@ class Settings(View):
                 usr.first_name = st_form.cleaned_data['first_name']
                 usr.last_name = st_form.cleaned_data['last_name']
                 new_mail = st_form.cleaned_data['email']
-                if (usr.email !=  new_mail):
+                if (usr.email != new_mail):
                     if (User.objects.filter(email=new_mail).exists()):
                         messages.error(request, 'Użytkownik o takim mailu już istnieje!')
-                        return render(request,'user-settings.html', {'st_form': st_form,
-                                                                     'cp_form': ChangePasswordForm(
-                                                                         initial={'user_id': user.id})})
+                        return render(request, 'user-settings.html', {'st_form': st_form,
+                                                                      'cp_form': ChangePasswordForm(
+                                                                          initial={'user_id': user.id})})
                     else:
                         usr.email = st_form.cleaned_data['email']
                         usr.username = st_form.cleaned_data['email']
@@ -121,7 +124,7 @@ class Settings(View):
                 usr.save()
                 return redirect('/login/')
             else:
-                messages.error(request,'Błąd')
+                messages.error(request, 'Błąd')
                 return render(request, 'user-settings.html', {'st_form': SettingForm(initial={}, instance=usr),
                                                               'cp_form': cp_form})
         else:
@@ -133,6 +136,7 @@ class DonationDetails(View):
         don = Donation.objects.filter(pk=id)
         ctx = {'don': don}
         return render(request, 'donation-details.html', ctx)
+
 
 class Login(View):
     def get(self, request):
