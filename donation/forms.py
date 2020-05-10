@@ -118,7 +118,7 @@ class SettingForm(forms.Form):
     last_name = forms.CharField(label='Last name:', required=False,
                                 widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
     password = forms.CharField(label='Password',
-                                   widget=forms.PasswordInput(attrs={'placeholder': 'Potwierdź zmiany hasłem'}))
+                                   widget=forms.PasswordInput(attrs={'placeholder': 'Potwierdź hasłem'}))
     user_id = forms.IntegerField(widget=forms.HiddenInput)
 
     def clean(self):

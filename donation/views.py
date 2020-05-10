@@ -125,7 +125,9 @@ class Settings(View):
                 return redirect('/login/')
             else:
                 messages.error(request, 'Błąd')
-                return render(request, 'user-settings.html', {'st_form': SettingForm(initial={}, instance=usr),
+                return render(request, 'user-settings.html', {'st_form': SettingForm(
+                    initial={'email': usr.email, 'first_name': usr.first_name, 'last_name': usr.last_name,
+                             'user_id': user.id}),
                                                               'cp_form': cp_form})
         else:
             redirect('/settings/')
@@ -133,10 +135,12 @@ class Settings(View):
 
 class DonationDetails(View):
     def get(self, request, id):
+        user = request.user
         don = Donation.objects.filter(pk=id)
+        if don[0].user_id != user.id:
+            return redirect('/')
         ctx = {'don': don}
         return render(request, 'donation-details.html', ctx)
-
 
 class Login(View):
     def get(self, request):

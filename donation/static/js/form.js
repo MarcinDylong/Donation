@@ -2,19 +2,19 @@ $(document).ready(function () {
     $('input[type="checkbox"]').click(function () {
         let checkButton = [];
         let catName = [];
-        $.each($('input[type="checkbox"]:checked'), function(){
-                checkButton.push($(this).val());
-                catName.push($(this).siblings()[1].innerHTML);
-            });
+        $.each($('input[type="checkbox"]:checked'), function () {
+            checkButton.push($(this).val());
+            catName.push($(this).siblings()[1].innerHTML);
+        });
 
         let radbox = $('.category-filter')
 
-        for (var j = 0; j<radbox.length; j++) {
+        for (var j = 0; j < radbox.length; j++) {
             let cat = JSON.parse(radbox[j].dataset['categories'])
-            if (isMatch(checkButton,cat)) {
+            if (isMatch(checkButton, cat)) {
                 // radbox[j][0].show();
-                $.each($(radbox[j]),function(){
-                   $(this).show()
+                $.each($(radbox[j]), function () {
+                    $(this).show()
                 });
             } else {
                 // radbox[j][0].hide();
@@ -33,13 +33,14 @@ $(document).ready(function () {
             let pickUpTime = $('input#id_pick_up_time').prop('value');
             let notes = $('input#id_notes').prop('value');
             let cat = $('input[type="checkbox"]:checked')
-            let bagsCat = "Ilość: "+bagsQty+" Kategorie: "+catName.join(', ')
+            let bagsCat = "Ilość: " + bagsQty + " Kategorie: " + catName.join(', ')
             let inst
-            $.each($('.category-filter'), function() {
-                if($(this).find('input').is(':checked')) {
+            $.each($('.category-filter'), function () {
+                if ($(this).find('input').is(':checked')) {
                     inst = $(this).find('div.title')[0].innerText;
                 }
             })
+            console.log(bagsCat)
             $('#qty-cat').text(bagsCat);
             $('#inst').text(inst);
             $('#street').text(street);
@@ -53,6 +54,3 @@ $(document).ready(function () {
     })
 });
 
-function isMatch(arr, arr2){
-  return arr.every(i => arr2.includes(i));
-}
