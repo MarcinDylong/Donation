@@ -9,9 +9,21 @@ $(document).ready(function () {
 
         let radbox = $('.category-filter')
 
+        function isMatch(checkButton, cat) {
+            let ret = true
+            for (var i=0; i<checkButton.length; i++) {
+                if (cat.includes(checkButton[i])) {}
+                else {
+                    ret = false
+                }
+            }
+            return ret;
+        }
+
         for (var j = 0; j < radbox.length; j++) {
             let cat = JSON.parse(radbox[j].dataset['categories'])
-            if (isMatch(checkButton, cat)) {
+            // if (checkButton in cat) {
+            if (isMatch(checkButton,cat)) {
                 // radbox[j][0].show();
                 $.each($(radbox[j]), function () {
                     $(this).show()
