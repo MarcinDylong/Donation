@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -192,3 +193,20 @@ class Register(View):
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)
+
+
+def SendContact(request):
+    if request.method == 'GET':
+        name = request.GET['name']
+        surname = request.GET['surname']
+        email = request.GET['email']
+        message = request.GET['message']
+        topic = f'Message from {name} {surname}, Donation contact form.'
+        ctx = {'name': name, 'surname': surname,
+               'email': email, 'message': message}
+        try:
+            send_mail(topic, message, email, ['donation@mail.com'])
+            ctx = {'info': 'Twój mail został wysłany'}
+        except:
+            ctx = {'info': 'Wystąpił błąd'}
+        return render(request, 'message_sent.html', ctx)
