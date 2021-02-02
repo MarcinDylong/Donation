@@ -18,6 +18,7 @@ class LoginForm(forms.ModelForm):
         fields = ('email', 'password')
 
 
+
 class RegisterForm(forms.ModelForm):
     email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}),
                              validators=[validate_email])
@@ -35,18 +36,44 @@ class RegisterForm(forms.ModelForm):
         # Automatically called by form.is_valid()
         # ...can also use 'clean_FIELDNAME()' for individual fields
 
-        email = self.cleaned_data['email']
+        ## Walidacja maila
+        try:
+            email = self.cleaned_data['email']
+        except:
+            raise ValidationError('Podano nie poprawny adres e-mail!')
 
         if User.objects.filter(username=email).exists():
             raise ValidationError('Użytkownik o takim emailu już istnieje!')
+        
 
+        ## Walidacja hasła
         password = self.cleaned_data['password']
         rep_password = self.cleaned_data['rep_password']
 
+        special_characters = "[~\!@#\$%\^&\*\(\)_\+{}\":;'\[\]]"
+        errors = []
+
+        if not any(char in special_characters for char in password):
+            errors.append(ValidationError(
+                'Hasło musi posiadać przynajmniej jeden znak specjalny!'))
+        if not any(char.isdigit() for char in password):
+            errors.append(ValidationError(
+                'Haslo musi zawierać przynajmniej jedną cyfrę!'))
+        if not any(char.isupper() for char in password):
+            errors.append(ValidationError(
+                'Hasło musi zawierać przynajmniej jedną dużą literę!'))
+        if not any(char.islower() for char in password):
+            errors.append(ValidationError(
+                'Hasło musi zawierać przynajmniej jedną małą literę!'))
+        if len(password) < 8:
+            errors.append(ValidationError(
+                'Hasło musi zawierać przynajmniej 8 znaków!'))
+
+        if errors:
+            raise ValidationError(errors)
+
         if password != rep_password:
             raise ValidationError('Powtórzone hasło się nie zgadza!')
-
-        validate_password(password)
 
 
 class DonationForm(forms.ModelForm):
