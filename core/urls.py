@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from donation.views import IndexPage, AddDonation, Login, Register, Logout, UserProfile, DonationDetails, Settings, \
@@ -30,5 +31,21 @@ urlpatterns = [
     path('user_profile/', UserProfile.as_view(), name='user_profile'),
     path('settings/', Settings.as_view(), name='settings'),
     path('donation_details/<int:id>', DonationDetails.as_view(), name = 'donation_details'),
-    path('send_contact/', SendContact, name='send_contact')
+    path('send_contact/', SendContact, name = 'send_contact'),
+    
+    path('reset/', auth_views.PasswordResetView.as_view(
+        template_name = 'reset_password.html',
+        email_template_name = 'password_reset_emai.html',
+        subject_template_name = 'password_reset_subject.txt'),
+        name = 'reset_password'),
+    path('reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='reset_password_done.html'),
+        name = 'reset_password_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name = 'reset_password_confirm.html'),
+        name = 'reset_password_confirm'),
+    path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name = 'reset_password_complete.html'),
+        name = 'reset_password_complete')
+
 ]
