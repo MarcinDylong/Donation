@@ -32,20 +32,19 @@ urlpatterns = [
     path('settings/', Settings.as_view(), name='settings'),
     path('donation_details/<int:id>', DonationDetails.as_view(), name = 'donation_details'),
     path('send_contact/', SendContact, name = 'send_contact'),
-    
     path('reset/', auth_views.PasswordResetView.as_view(
         template_name = 'reset_password.html',
-        email_template_name = 'password_reset_emai.html',
-        subject_template_name = 'password_reset_subject.txt'),
-        name = 'reset_password'),
+        email_template_name = 'reset_password_email.html',
+        subject_template_name = 'reset_password_subject.txt'),
+        name = 'password_reset'),
     path('reset/done/', auth_views.PasswordResetDoneView.as_view(
         template_name='reset_password_done.html'),
-        name = 'reset_password_done'),
+        name = 'password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
         template_name = 'reset_password_confirm.html'),
-        name = 'reset_password_confirm'),
+        name = 'password_reset_confirm'),
     path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name = 'reset_password_complete.html'),
-        name = 'reset_password_complete')
+        name = 'password_reset_complete')
 
 ]

@@ -2,12 +2,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordResetForm
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
+
 
 from .forms import LoginForm, RegisterForm, DonationForm, ChangePasswordForm, SettingForm
 from .models import Category, Institution, Donation
@@ -193,6 +195,13 @@ class Register(View):
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)
+
+
+class ResetPasswordView(View):
+    def get(self, request):
+        form = PasswordResetForm()
+        ctx = {'form': form}
+        return render(request, 'reset_password.html', ctx)
 
 
 def SendContact(request):
