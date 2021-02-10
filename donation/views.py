@@ -4,16 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, resolve_url
 from django.views import View
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.db.models import Sum
-from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.encoding import force_text
-from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode
 
 
 from .forms import LoginForm, RegisterForm, DonationForm, ChangePasswordForm, \
@@ -172,7 +171,7 @@ class Login(View):
             else:
                 messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
                 request.session['email'] = email
-                ctx = {'form': RegisterForm()}
+                # ctx = {'form': RegisterForm()}
                 # return render(request, 'register.html', ctx)
                 return redirect('/register/')
 
@@ -215,22 +214,21 @@ class ResetPassword(View):
         if form.is_valid():
             email = form.cleaned_data['email']
             self.password_reset(request=request,
-                template_name='templates/reset_password.html',
+                # template_name='templates/reset_password.html',
                 email_template_name='reset_password_email.html',
                 subject_template_name='reset_password_subject.txt',
                 password_reset_form = PasswordResetForm
             )
             return redirect('/reset/done')
-
         else:
             messages.warning(request, f'Wystąpił błąd, spróbuj jeszcze raz')
             ctx = {'form': form}
-            return redirect('/reset/')
+            return render(request, 'reset_password.html', ctx)
 
 
 
-    def password_reset(self, request, is_admin_site=False,
-                    template_name='registration/password_reset_form.html',
+    def password_reset(self, request,
+                    # template_name='registration/password_reset_form.html',
                     email_template_name='registration/password_reset_email.html',
                     subject_template_name='registration/password_reset_subject.txt',
                     password_reset_form=PasswordResetForm,
@@ -283,7 +281,6 @@ class ResetPasswordComplete(View):
 # class ResetPasswordConfirm(View):
 def ResetPasswordConfirm(request, uidb64=None, token=None,
         template_name='reset_password_confirm.html',
-        post_reset_redirect=None,
         token_generator=default_token_generator,
         set_password_form=SetPasswordForm) :
     """
@@ -292,11 +289,6 @@ def ResetPasswordConfirm(request, uidb64=None, token=None,
     """
     UserModel = get_user_model()
     assert uidb64 is not None and token is not None  # checked by URLconf
-
-    if post_reset_redirect is None:
-        post_reset_redirect = reverse('password_reset_complete')
-    else:
-        post_reset_redirect = resolve_url(post_reset_redirect)
     
     try:
         # urlsafe_base64_decode() decodes to bytestring on Python 3
@@ -313,7 +305,8 @@ def ResetPasswordConfirm(request, uidb64=None, token=None,
                 form.save()
                 return redirect('/reset/complete/')
             else:
-                return render(request, template_name, {'form':form})
+                context = {'form':form,'validlink': validlink}
+                return render(request, template_name, context)
         else:
             form = set_password_form(user)
     else:
