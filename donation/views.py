@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
@@ -12,11 +12,12 @@ from django.core.mail import send_mail
 from django.db.models import Sum
 from django.template.response import TemplateResponse
 from django.urls import reverse
-
+from django.utils.encoding import force_text
+from django.utils.http import is_safe_url, urlsafe_base64_decode
 
 
 from .forms import LoginForm, RegisterForm, DonationForm, ChangePasswordForm, \
-    SettingForm, PasswordResetForm
+    SettingForm, PasswordResetForm, SetPasswordForm
 from .models import Category, Institution, Donation
 
 
@@ -219,9 +220,7 @@ class ResetPassword(View):
                 subject_template_name='reset_password_subject.txt',
                 password_reset_form = PasswordResetForm
             )
-            messages.success(request, 'Link do zmiany hasła został wysłany na \
-                podany adres.')
-            return redirect('/reset/')
+            return redirect('/reset/done')
 
         else:
             messages.warning(request, f'Wystąpił błąd, spróbuj jeszcze raz')
@@ -261,17 +260,71 @@ class ResetPassword(View):
                 return HttpResponseRedirect(post_reset_redirect)
         else:
             form = password_reset_form()
-        context = {
-            'form': form,
-            'title': _('Password reset'),
-        }
+        context = {'form': form}
         if extra_context is not None:
             context.update(extra_context)
 
         if current_app is not None:
             request.current_app = current_app
 
-        return TemplateResponse(request, template_name, context)
+        return redirect('/reset_password_done/')
+
+
+class ResetPasswordDone(View):
+    def get(self, request):
+        return render(request, 'reset_password_done.html')
+
+
+class ResetPasswordComplete(View):
+    def get(self, request):
+        return render(request, 'reset_password_complete.html')
+
+
+# class ResetPasswordConfirm(View):
+def ResetPasswordConfirm(request, uidb64=None, token=None,
+        template_name='reset_password_confirm.html',
+        post_reset_redirect=None,
+        token_generator=default_token_generator,
+        set_password_form=SetPasswordForm) :
+    """
+    View that checks the hash in a password reset link and presents a
+    form for entering a new password.
+    """
+    UserModel = get_user_model()
+    assert uidb64 is not None and token is not None  # checked by URLconf
+
+    if post_reset_redirect is None:
+        post_reset_redirect = reverse('password_reset_complete')
+    else:
+        post_reset_redirect = resolve_url(post_reset_redirect)
+    
+    try:
+        # urlsafe_base64_decode() decodes to bytestring on Python 3
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = UserModel._default_manager.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+        user = None
+
+    if user is not None and token_generator.check_token(user, token):
+        validlink = True
+        if request.method == 'POST':
+            form = set_password_form(user, request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('/reset/complete/')
+            else:
+                return render(request, template_name, {'form':form})
+        else:
+            form = set_password_form(user)
+    else:
+        validlink = False
+        form = None
+    context = {
+        'form': form,
+        'validlink': validlink
+    }
+    return render(request, template_name, context)
+
 
 def SendContact(request):
     if request.method == 'GET':

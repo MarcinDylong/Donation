@@ -15,11 +15,11 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import path
 from donation.views import (AddDonation, DonationDetails, IndexPage, Login,
                             Logout, Register, SendContact, Settings,
-                            UserProfile, ResetPassword)
+                            UserProfile, ResetPassword, ResetPasswordDone,
+                            ResetPasswordComplete, ResetPasswordConfirm)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,20 +35,11 @@ urlpatterns = [
     path('send_contact/', SendContact, name = 'send_contact'),
     path('reset/', ResetPassword.as_view(),
         name = 'password_reset'),
-
-    # path('reset/', auth_views.PasswordResetView.as_view(
-    #     template_name = 'reset_password.html',
-    #     email_template_name = 'reset_password_email.html',
-    #     subject_template_name = 'reset_password_subject.txt'),
-    #     name = 'password_reset'),
-    path('reset/done/', auth_views.PasswordResetDoneView.as_view(
-        template_name='reset_password_done.html'),
+    path('reset/done/', ResetPasswordDone.as_view(),
         name = 'password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        template_name = 'reset_password_confirm.html'),
+    path('reset/<uidb64>/<token>/', ResetPasswordConfirm,
         name = 'password_reset_confirm'),
-    # path('reset/complete/', auth_views.PasswordResetCompleteView.as_view(
-    #     template_name = 'reset_password_complete.html'),
-    #     name = 'password_reset_complete')
+    path('reset/complete/', ResetPasswordComplete.as_view(),
+        name = 'password_reset_complete')
 
 ]

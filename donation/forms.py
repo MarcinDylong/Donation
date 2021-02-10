@@ -218,3 +218,32 @@ class PasswordResetForm(forms.Form):
             self.send_mail(subject_template_name, email_template_name,
                            context, from_email, user.email,
                            html_email_template_name=html_email_template_name)
+
+
+class SetPasswordForm(forms.Form):
+    """
+    A form that lets a user change set their password without entering the old
+    password
+    """
+    new_password1 = forms.CharField(label="Nowe Hasło",
+                                    widget=forms.PasswordInput(attrs={
+                                        'placeholder': 'Nowe hasło'}))
+    new_password2 = forms.CharField(label="Potwierdź nowe hasło",
+                                    widget=forms.PasswordInput(attrs={
+                                        'placeholder': 'Potwierdź nowe hasło'}))
+    
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(SetPasswordForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+
+        password_validator(password1, password2)
+
+    def save(self, commit=True):
+        self.user.set_password(self.cleaned_data['new_password1'])
+        if commit:
+            self.user.save()
+        return self.user
