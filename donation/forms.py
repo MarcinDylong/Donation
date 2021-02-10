@@ -173,12 +173,10 @@ class PasswordResetForm(forms.Form):
 
 
     def clean(self):
-        email = self.cleaned_data['email']
-
-        # user = User.objects.filter(email=email).first()
-
-        # if user is None:
-        #     raise ValidationError(f'Adres {email} nie znajduję się w bazie danych')
+        try:
+            email = self.cleaned_data['email']
+        except:
+            raise ValidationError('Podano nie poprawny adres e-mail!')
 
         if not User.objects.filter(username=email).exists():
             raise ValidationError(f'Adres {email} nie znajduję się w bazie danych')

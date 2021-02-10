@@ -221,7 +221,7 @@ class ResetPassword(View):
             )
             return redirect('/reset/done')
         else:
-            messages.warning(request, f'Wystąpił błąd, spróbuj jeszcze raz')
+            messages.warning(request, f'Wystąpił błąd, spróbuj jeszcze raz:')
             ctx = {'form': form}
             return render(request, 'reset_password.html', ctx)
 
