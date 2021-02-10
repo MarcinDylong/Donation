@@ -219,7 +219,7 @@ class ResetPassword(View):
                 subject_template_name='reset_password_subject.txt',
                 password_reset_form = PasswordResetForm
             )
-            return redirect('/reset/done')
+            return redirect('/reset/done/')
         else:
             messages.warning(request, f'Wystąpił błąd, spróbuj jeszcze raz:')
             ctx = {'form': form}
@@ -265,7 +265,7 @@ class ResetPassword(View):
         if current_app is not None:
             request.current_app = current_app
 
-        return redirect('/reset_password_done/')
+        return redirect('/reset/done/')
 
 
 class ResetPasswordDone(View):

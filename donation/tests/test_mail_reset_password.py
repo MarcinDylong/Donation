@@ -5,7 +5,7 @@ from django.test import TestCase
 
 class PasswordResetMailTests(TestCase):
     def setUp(self):
-        User.objects.create_user(username='Test', email='test@mail.com',
+        User.objects.create_user(username='test@mail.com', email='test@mail.com',
             password='!Abc1234')
         self.response = self.client.post(reverse('password_reset'), {'email': 'test@mail.com'})
         self.email = mail.outbox[0]
@@ -22,7 +22,6 @@ class PasswordResetMailTests(TestCase):
             'token': token
         })
         self.assertIn(password_reset_token_url, self.email.body)
-        self.assertIn('Test', self.email.body)
         self.assertIn('test@mail.com', self.email.body)
 
     def test_email_to(self):
