@@ -15,6 +15,13 @@
 
     {% block content %} {% endblock %}
 
+    <footer>
+      {% block extra_footer %} {% endblock %}
+
+      <div class="bottom-line">
+        <span class="bottom-line--copy">Copyright &copy; 2021</span>
+      </div>
+    </footer>
 
     <script src="{% static 'js/app.js' %}?version=1"></script>
     <script src="{% static 'js/form.js' %}?version=1"></script>
