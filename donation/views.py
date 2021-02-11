@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, resolve_url
 from django.views import View
@@ -11,8 +12,11 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.db.models import Sum
 from django.urls import reverse
-from django.utils.encoding import force_text
-from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.template import loader
+from django.core.mail import EmailMultiAlternatives
+
 
 
 from .forms import LoginForm, RegisterForm, DonationForm, ChangePasswordForm, \
@@ -150,6 +154,7 @@ class DonationDetails(View):
         ctx = {'don': don}
         return render(request, 'donation-details.html', ctx)
 
+
 class Login(View):
     def get(self, request):
         form = LoginForm()
@@ -162,17 +167,19 @@ class Login(View):
             email = form.cleaned_data['email']
             passwd = form.cleaned_data['password']
             user = authenticate(request, username=email, password=passwd)
+            
             if user is not None:
                 login(request, user)
                 return redirect('/')
+            elif not User.objects.filter(username=email).last().is_active:
+                messages.error(request, f'Konto nieaktywowane!')
+                return render(request, 'login.html', {'form': form})
             elif User.objects.filter(username=email).exists():
                 messages.error(request, f'Podano nie poprawne hasło!')
                 return render(request, 'login.html', {'form': form})
             else:
                 messages.error(request, f'Użytkownik {email} nie istnieje, czy chcesz się zarejestrować?')
                 request.session['email'] = email
-                # ctx = {'form': RegisterForm()}
-                # return render(request, 'register.html', ctx)
                 return redirect('/register/')
 
 
@@ -182,6 +189,49 @@ def Logout(request):
 
 
 class Register(View):
+
+    def activation_mail(self, subject_template_name, email_template_name,
+                  context, from_email, to_email, html_email_template_name=None):
+
+        subject = loader.render_to_string(subject_template_name, context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+
+        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        if html_email_template_name is not None:
+            html_email = loader.render_to_string(html_email_template_name, context)
+            email_message.attach_alternative(html_email, 'text/html')
+
+        email_message.send()
+  
+    def activate(self, email,
+             subject_template_name='templates/activate_subject.txt',
+             email_template_name='templates/activate_email.html',
+             use_https=False, token_generator=default_token_generator,
+             from_email=None, request=None, html_email_template_name=None):
+        """
+        Generates a one-use only link to confirm registration
+        """
+        users = User.objects.filter(email=email)
+        for user in users:
+            current_site = get_current_site(request)
+            site_name = current_site.name
+            domain = current_site.domain
+            context = {
+                'email': user.email,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': token_generator.make_token(user),
+                'protocol': 'https' if use_https else 'http',
+            }
+
+            self.activation_mail(subject_template_name, email_template_name,
+                           context, from_email, user.email,
+                           html_email_template_name=html_email_template_name)
+
     def get(self, request):
         form = RegisterForm()
         ctx = {'form': form}
@@ -196,11 +246,43 @@ class Register(View):
             password = form.cleaned_data['password']
             User.objects.create_user(first_name=first_name, last_name=last_name,
                                      username=email, email=email,
-                                     password=password)
+                                     password=password, is_active=False)
+            self.activate(request=request, email=email,
+                          email_template_name='activate_email.html',
+                          subject_template_name='activate_subject.txt')
+            messages.info(request,
+                f'Przed zalogowaniem aktywuj konto przez link wysłany na wskazany adres email')   
             return redirect('/login')
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)
+
+
+class AccountActivation(View):
+    def get(self, request, uidb64=None, token=None,
+        template_name='activate_confirm.html',
+        token_generator=default_token_generator):
+        UserModel = get_user_model()
+        assert uidb64 is not None and token is not None  # checked by URLconf
+    
+        try:
+            # urlsafe_base64_decode() decodes to bytestring on Python 3
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = UserModel._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
+            user = None
+
+        if user is not None and token_generator.check_token(user, token):
+            validlink = True
+            user.is_active = True
+            user.save()
+        else:
+            validlink = False
+        context = {
+            'validlink': validlink,
+            'user': user
+        }
+        return render(request, template_name, context)
 
 
 class ResetPassword(View):
@@ -278,7 +360,6 @@ class ResetPasswordComplete(View):
         return render(request, 'reset_password_complete.html')
 
 
-# class ResetPasswordConfirm(View):
 def ResetPasswordConfirm(request, uidb64=None, token=None,
         template_name='reset_password_confirm.html',
         token_generator=default_token_generator,

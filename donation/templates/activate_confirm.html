@@ -1,0 +1,28 @@
+{% extends "base_small.html" %}
+{% load static %}
+
+{% block title %} Konto aktywowane {% endblock %}
+{% block extra_img %} {% endblock %}
+{% block extra_header %} {% endblock %}
+{% block content %}
+<section class="login-page">
+  <h2>Aktywacja konta</h2>
+  {% if validlink %}
+    <div class="form-group">
+      <h1>Konto dla użytkownia: {{user.username}} zostało aktywowane</h1>
+    </div>
+    <div class='form-group'>
+      <a href='/login/' class= 'btn'>Zaloguj się!</a>
+    </div>
+  {% else %}
+  <div class="form-group">
+    <h1>Wadliwy link aktywacji. Spróbuj jeszcze raz!</h1>
+  </div>
+  <div class='form-group'>
+    <a href='/reset/' class= 'btn'>Wygeneruj nowy link</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+

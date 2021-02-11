@@ -19,7 +19,8 @@ from django.urls import path
 from donation.views import (AddDonation, DonationDetails, IndexPage, Login,
                             Logout, Register, SendContact, Settings,
                             UserProfile, ResetPassword, ResetPasswordDone,
-                            ResetPasswordComplete, ResetPasswordConfirm)
+                            ResetPasswordComplete, ResetPasswordConfirm,
+                            AccountActivation)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,4 +42,5 @@ urlpatterns = [
         name = 'password_reset_confirm'),
     path('reset/complete/', ResetPasswordComplete.as_view(),
         name = 'password_reset_complete'),
+    path('activate/<uidb64>/<token>/', AccountActivation.as_view(), name='account_activation')
 ]
