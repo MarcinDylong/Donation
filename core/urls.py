@@ -20,7 +20,7 @@ from donation.views import (AddDonation, DonationDetails, IndexPage, Login,
                             Logout, Register, SendContact, Settings,
                             UserProfile, ResetPassword, ResetPasswordDone,
                             ResetPasswordComplete, ResetPasswordConfirm,
-                            AccountActivation)
+                            AccountActivation)#, NewToken)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,5 +42,6 @@ urlpatterns = [
         name = 'password_reset_confirm'),
     path('reset/complete/', ResetPasswordComplete.as_view(),
         name = 'password_reset_complete'),
-    path('activate/<uidb64>/<token>/', AccountActivation.as_view(), name='account_activation')
+    path('activate/<uidb64>/<token>/', AccountActivation.as_view(), name = 'account_activation'),
+    # path('generate_token/', NewToken, name='generate_token' )
 ]
