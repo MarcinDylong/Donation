@@ -183,20 +183,18 @@ class Login(View):
                         messages.error(request, f'Użytkownik {email} nie istnieje, \
                                                     czy chcesz się zarejestrować?')
                         return redirect('/register/')
-            else:
-                user = User.objects.filter(email=email).first()
+            else: 
                 ctx = {'inactive': True, 'form': form}
                 try:
+                    user = User.objects.filter(email=email).first()
                     send_token(request=request, email=email,
                                 email_template_name='activate_email.html',
                                 subject_template_name='activate_subject.txt')
                     messages.info(request,
                         'Przed zalogowaniem aktywuj konto przez link wysłany na \
                         wskazany adres email ')
-                    
                 except:
                     messages.error(request, 'Wystąpił błąd, spróbuje ponownie')
-                    # return render(request, 'login.html', ctx)
                 return render(request, 'login.html', ctx)
         else:
             form = LoginForm()
@@ -232,7 +230,7 @@ class Register(View):
             messages.info(request,
                 f'Przed zalogowaniem aktywuj konto przez link wysłany na \
                   wskazany adres email')   
-            return redirect('/login')
+            return redirect('/login/')
         else:
             ctx = {'form': form}
             return render(request, 'register.html', ctx)
