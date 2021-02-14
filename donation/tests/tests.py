@@ -1,5 +1,5 @@
 from django.urls import reverse, resolve
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 
 from donation.forms import RegisterForm
@@ -97,3 +97,45 @@ class InvalidSignUpTests(TestCase):
 
     def test_dont_create_user(self):
         self.assertFalse(User.objects.exists())
+
+
+class LoginRequiredAddDonationViewFailed(TestCase):
+    def setUp(self):
+        self.url = reverse('add_donation')
+        self.response = self.client.get(self.url)
+
+    def test_redirection(self):
+        login_url = reverse('login')
+        self.assertRedirects(self.response, f'{login_url}?next={self.url}')
+
+
+class LoginRequiredAddDonationViewSuccesful(TestCase):
+    def setUp(self):
+        self.client = Client(HTTP_HOST='localhost:8000')
+        user = User.objects.create(username='test@test.com', email='test@test.com')
+        user.set_password('Pass123!')
+        user.save()
+        self.user = user
+        self.user_login = self.client.login(username=self.user.username, password='Pass123!')
+
+    def test_login(self):        
+        self.assertTrue(self.user_login)
+
+    def test_status_code(self):
+        self.url = reverse('add_donation')
+        self.response = self.client.get(self.url)
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_logged_user_has_profile(self):
+        self.url = reverse('add_donation')
+        self.response = self.client.get(self.url)
+        self.profile_url = reverse('user_profile')
+        self.assertContains(self.response,
+            f'<a href="{self.profile_url}">Profil</a>')
+
+    def test_logged_user_has_profile(self):
+        self.url = reverse('add_donation')
+        self.response = self.client.get(self.url)
+        self.settings_url = reverse('settings')
+        self.assertContains(self.response,
+            f'<a href="{self.settings_url}">Ustawienia</a>')

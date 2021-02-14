@@ -54,8 +54,7 @@ class LoginForm(forms.ModelForm):
 
 
 class RegisterForm(forms.ModelForm):
-    email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}),
-                             validators=[validate_email])
+    email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'placeholder': 'Email'}))
     first_name = forms.CharField(label='First name:', widget=forms.TextInput(attrs={'placeholder': 'Imię'}))
     last_name = forms.CharField(label='Last name:', widget=forms.TextInput(attrs={'placeholder': 'Nazwisko'}))
     password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
@@ -74,7 +73,7 @@ class RegisterForm(forms.ModelForm):
         try:
             email = self.cleaned_data['email']
         except:
-            raise ValidationError('Podano nie poprawny adres e-mail!')
+            raise ValidationError('Podano niepoprawny adres e-mail!')
 
         if User.objects.filter(username=email).exists():
             raise ValidationError('Użytkownik o takim emailu już istnieje!')
