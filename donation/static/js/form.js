@@ -35,7 +35,17 @@ $(document).ready(function () {
                 });
             }
         }
-        $('.next-step').click(function () {
+
+        function IsFilled(value, message) {
+                if (value === '') {
+                    Swal.fire({
+                        title: 'Błąd!\n',
+                        text: message
+                    })
+                }
+            }
+
+        $('.summary').click(function () {
             let bagsQty = $('input#id_quantity').prop('value');
             let street = $('input#id_address').prop('value');
             let city = $('input#id_city').prop('value');
@@ -52,7 +62,7 @@ $(document).ready(function () {
                     inst = $(this).find('div.title')[0].innerText;
                 }
             })
-            console.log(bagsCat)
+            // console.log(bagsCat)
             $('#qty-cat').text(bagsCat);
             $('#inst').text(inst);
             $('#street').text(street);
@@ -62,6 +72,18 @@ $(document).ready(function () {
             $('#pick_up_date').text(pickUpDate);
             $('#pick_up_time').text(pickUpTime);
             $('#notes').text(notes);
+            // Summary
+            $('.submit').click(function () { 
+                IsFilled(bagsQty, 'Uzupełnij ilość!');
+                IsFilled(cat, 'Wybierz co chcesz przekazać!');
+                IsFilled(inst, 'Wybierz instytucję!');
+                IsFilled(street, 'Uzupełnij nazwę ulicy!');
+                IsFilled(city, 'Uzupełnij nazwę miasta!');
+                IsFilled(zipCode, 'Uzupełnij kod pocztowy!');
+                IsFilled(pickUpDate, 'Uzupełnij dzień odbioru!');
+                IsFilled(pickUpTime, 'Uzupełnij godzinę odbioru!');
+                IsFilled(phoneNumber, 'Uzupełnij numer konraktowy!');
+            })
         })
     })
 });
