@@ -22,14 +22,11 @@ $(document).ready(function () {
 
         for (var j = 0; j < radbox.length; j++) {
             let cat = JSON.parse(radbox[j].dataset['categories'])
-            // if (checkButton in cat) {
             if (isMatch(checkButton,cat)) {
-                // radbox[j][0].show();
                 $.each($(radbox[j]), function () {
                     $(this).show()
                 });
             } else {
-                // radbox[j][0].hide();
                 $.each($(radbox[j]), function () {
                     $(this).hide()
                 });
@@ -62,7 +59,7 @@ $(document).ready(function () {
                     inst = $(this).find('div.title')[0].innerText;
                 }
             })
-            // console.log(bagsCat)
+    
             $('#qty-cat').text(bagsCat);
             $('#inst').text(inst);
             $('#street').text(street);

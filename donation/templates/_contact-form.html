@@ -2,7 +2,6 @@
     <h2>Skontaktuj się z nami</h2>
     <h3>Formularz kontaktowy</h3>
     <form class="form--contact" action ="{% url 'send_contact'%}" method="get" id='location_form'> 
-        <!-- action ="{% url 'send_contact'%}"   -->
         <div class="form-group form-group--50"><input type="text" name="name" id='cnt_name' placeholder="Imię" /></div>
         <div class="form-group form-group--50"><input type="text" name="surname" id='cnt_surname' placeholder="Nazwisko" /></div>
         <div class="form-group"><textarea name="email" placeholder="Adres email" id='cnt_email' rows="1"></textarea></div>
@@ -33,49 +32,4 @@
                
         }); 
     });
-    // $(document).ready(function () {
-    //     $('#submit_form').click(function(){
-    //         if(form_is_valid()){
-    //             $('#location_form').submit();
-    //             }
-    //         else {
-    //             alert('Your message');
-    //         }
-    //     });
-        // function _validateForm() {
-        //     alert('Uzupełnij wszystkie dane!');
-        // }
-
-        // $('#contact').click(function(e){
-        //     var id = $(this).attr('id');
-        //     if (id == 'yes')
-        //     {
-        //         e.preventDefault();
-        //         e.stopPropagation();
-        //     }
-        //     else
-        //     {
-        //         //redirect
-        //     }
-        // });
-
-        // function IsFilled(value, message) {
-        //         if (value === '') {
-        //             Swal.fire({
-        //                 title: 'Błąd!\n',
-        //                 text: message
-        //             });
-        //         };
-        //     };
-
-
-        // $('#contact').click(fuction (), {
-        //     let name = $('#cnt_name').prop('value');
-        //     let surname = $('#cnt_name').prop('value');
-        //     let email = $('#cnt_name').prop('value');
-        //     let message = $('#cnt_name').prop('value');
-        // });
-    // });
-
-
 </script>
