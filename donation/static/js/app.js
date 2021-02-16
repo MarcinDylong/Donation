@@ -221,7 +221,6 @@ document.addEventListener("DOMContentLoaded", function() {
     updateForm() {
       this.$step.innerText = this.currentStep;
 
-      // TODO: Validation
 
       this.slides.forEach(slide => {
         slide.classList.remove("active");
@@ -234,16 +233,10 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
-      // TODO: get data from inputs and show them in summary
     }
 
-    /**
-     * Submit form
-     *
-     * TODO: validation, send data to server
-     */
+
     submit(e) {
-      // e.preventDefault();
       this.currentStep++;
       this.updateForm();
     }
