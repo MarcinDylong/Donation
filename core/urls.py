@@ -44,3 +44,8 @@ urlpatterns = [
         name = 'password_reset_complete'),
     path('activate/<uidb64>/<token>/', AccountActivation.as_view(), name = 'account_activation')
 ]
+
+handler400 = 'donation.views.view_400'
+handler403 = 'donation.views.view_403'
+handler404 = 'donation.views.view_404'
+handler500 = 'donation.views.view_500'
