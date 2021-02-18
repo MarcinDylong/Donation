@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Potwierdzenie {% endblock %}
+{% block extra_img %} {% endblock %}
+{% block extra_header %}
+{#    <div class="slogan container container--90">#}
+        {% for m in messages %}
+            <h2>
+                {{ m }}
+            </h2>
+        {% endfor %}
+{#    </div>#}
+{% endblock %}
+{% block extra_footer %}
+  {% include '_contact-form.html' %}
+{% endblock %}

@@ -8,3 +8,6 @@ __pycache__
 *.db
 *.sql
 
+core/settings_local.py
+
+nano.save

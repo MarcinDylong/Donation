@@ -20,6 +20,33 @@ from .models import Category, Institution, Donation
 from .token import send_token
 
 
+def view_400(request, *args, **kwargs):
+    """Error 400 handler
+    """    
+    messsages.error('Błąd 400')
+    return render(request, 'http_error.html')
+
+
+def view_403(request, *args, **kwargs):
+    """Error 403 handler
+    """
+    messsages.error('Błąd 403')
+    return render(request, 'http_error.html')
+
+
+def view_404(request, *args, **kwargs):
+    """Error 404 handler
+    """
+    messsages.error('Błąd 404')
+    return render(request, 'http_error.html')
+
+
+def view_500(request, *args, **kwargs):
+    """Error 500 handler
+    """
+    messsages.error('Błąd 500')
+    return render(request, 'http_error.html')
+
 class IndexPage(View):
     def get(self, request):
         ## Liczniki
