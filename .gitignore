@@ -1,7 +1,7 @@
 .idea
 .vscode
 proj_env
-env
+.env
 __pycache__
 *.pyc
 *.sqlite3
