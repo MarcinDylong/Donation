@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,16 +84,6 @@ DATABASES = {
         default=config('DATABASE_URL')
     )
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': '127.0.0.1',
-#         'USER': 'postgres',
-#         'NAME': 'charity_donation',
-#         'PASSWORD': 'coderslab',
-#     }
-# }
 
 
 # Password validation
