@@ -718,6 +718,10 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 34	Can change donation	9	change_donation
 35	Can delete donation	9	delete_donation
 36	Can view donation	9	view_donation
+37	Can add profile	10	add_profile
+38	Can change profile	10	change_profile
+39	Can delete profile	10	delete_profile
+40	Can view profile	10	view_profile
 \.
 
 
@@ -726,8 +730,8 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$180000$FtipACD9rnzt$j//McHfostlKQ81CPCpinaZtwUzdjktKyIFbcMKP7L0=	2021-01-27 21:14:52.696911+01	f	madas@mail.pl	Marcin	Adasiewicz	madas@mail.pl	f	t	2021-01-26 14:56:27.993789+01
-2	pbkdf2_sha256$180000$CTseGvG3KNSK$BzmXA2pScPy8/M4fKud8CSpO2Vw6OYNME49BiU4M7ok=	2021-01-27 21:26:08.641021+01	t	admin	Admino	Admiński	admin@mail.com	t	t	2021-01-27 21:02:56.971774+01
+1	pbkdf2_sha256$180000$L9IAWtex4ULj$sbgBze/bQtP4G1ftpyKiHJRKAMnHyr46F0ym22FTaD0=	2021-02-22 05:41:38.625865+01	f	madas@mail.pl	Marcin	Adasiewicz	madas@mail.pl	f	t	2021-01-26 14:56:27.993789+01
+2	pbkdf2_sha256$180000$5q8ELCGw9RWe$bUNpt8sGRyVZpYSCKmRS5W6+/XiKZw62m2J3JKCJoPw=	2021-02-22 05:43:04.765877+01	t	admin	Admino	Admiński	admin@mail.com	t	t	2021-01-27 21:02:56.971774+01
 \.
 
 
@@ -759,6 +763,14 @@ COPY public.django_admin_log (id, action_time, object_id, object_repr, action_fl
 5	2021-01-27 21:10:40.459972+01	4	Organizacja pozarządowa: Organizacja pomocy bezdomnym	1	[{"added": {}}]	8	2
 6	2021-01-27 21:12:36.55642+01	5	Fundacja: Fundacja "Nie wyrzucaj"	1	[{"added": {}}]	8	2
 7	2021-01-27 21:14:16.127165+01	6	Organizacja pozarządowa: Organizacja "Nowy Dom"	1	[{"added": {}}]	8	2
+8	2021-02-02 16:50:54.875722+01	2	admin	3		4	2
+9	2021-02-18 14:20:49.624863+01	30	adamo@mail.pl	3		4	2
+10	2021-02-18 14:21:01.204497+01	32	alex@gmail.com	3		4	2
+11	2021-02-18 14:21:01.208904+01	33	kupadupa@gmail.com	3		4	2
+12	2021-02-18 14:21:01.211291+01	31	nowak@mail.com	3		4	2
+13	2021-02-18 14:21:48.011094+01	2	admin	3		4	2
+14	2021-02-18 14:24:05.140919+01	5	Darowizna dla Organizacja pomocy bezdomnym	2	[{"changed": {"fields": ["User"]}}]	9	2
+15	2021-02-18 14:24:11.16325+01	4	Darowizna dla Organizacja pomocy bezdomnym	2	[{"changed": {"fields": ["User"]}}]	9	2
 \.
 
 
@@ -776,6 +788,7 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 7	donation	category
 8	donation	institution
 9	donation	donation
+10	donation	profile
 \.
 
 
@@ -809,6 +822,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 23	donation	0007_auto_20200508_0131	2021-01-26 14:55:28.218331+01
 24	donation	0008_auto_20200508_1307	2021-01-26 14:55:28.247385+01
 25	sessions	0001_initial	2021-01-26 14:55:28.259884+01
+26	donation	0009_profile	2021-02-08 13:10:24.523166+01
 \.
 
 
@@ -820,6 +834,9 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 9h73ie1q9lvh64ozhiqxq43co0pg77j4	ZjczYmQzNGZhYWU0MDAxN2U1YWQxYmM5YjliMjcyMjI4Mjk2OGIzODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwMzIwZDMwZWJlOTRhNTJlNzllZTM3MjVjMDQ5MjQyN2ZjMmZlOWYwIn0=	2021-02-09 14:56:35.936112+01
 34ti4pwew4v9ggk06t2z6hxyzkzrnro5	NDE2NWM1ZmY5ZjcwOGQ4ZWYwOTg2OTUyMWNmMjc0MTBmYWRmNzAwNDp7ImVtYWlsIjoiYWRtaW5AbWFpbC5jb20iLCJfYXV0aF91c2VyX2lkIjoiMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiZDVmYWM5ZmM2YzRlZWM5NDMzYzY0MTE4M2IyYmI5MmVlNTdhODRiNyJ9	2021-02-10 21:04:13.659682+01
 4yfwibu06lklbq9noiwxm4huh6m36tey	NWMyOGM2Yzg3YjI4YzU0N2NlNmIxMDZhNGYwMTM0ODc5MTk2NjRlNzp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkNWZhYzlmYzZjNGVlYzk0MzNjNjQxMTgzYjJiYjkyZWU1N2E4NGI3In0=	2021-02-10 21:26:08.644183+01
+5tnvb38oxgvk3av88z57fl3qkc57nuzt	ZjczYmQzNGZhYWU0MDAxN2U1YWQxYmM5YjliMjcyMjI4Mjk2OGIzODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwMzIwZDMwZWJlOTRhNTJlNzllZTM3MjVjMDQ5MjQyN2ZjMmZlOWYwIn0=	2021-02-16 17:21:55.395083+01
+h1q63jp789mq5odrlclgddt1ghdyzva5	ZGFkMTU5ZGZmMTJmZGJkMmM4NDA1NDViZTZlNTE3MzdhZmNjMjM3NTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiJkYjgwYjhjNzZhOWI4NjQ0MjI3Yjc2MzE2OTA5ZWJmM2Y4Y2U4MjFjIn0=	2021-02-17 16:51:44.909692+01
+2zrnis4cz56ia245ooggoysejwn8zob4	MTBjOWVmNTRmMDQyYmY4YTk3NWUzZWUwYzNhYjAyMGJmNjdlNzY4NDp7Il9hdXRoX3VzZXJfaWQiOiIyIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIwZTdjZTg0MjU3ZDVlZjYxNTJiYWZiNjI2NjhkZWU2NDEwZWEwMDZmIn0=	2021-03-08 05:43:04.769007+01
 \.
 
 
@@ -845,8 +862,8 @@ COPY public.donation_donation (id, quantity, address, phone_number, city, zip_co
 1	2	Krakowska	500-500-500	Kraków	00-000	2021-01-31	12:00:00	2	1		\N	2021-01-27 21:16:36.207076+01	2021-01-27 21:16:36.223889+01
 3	1	Starożytna 7	500-400-391	Mohendżo Daro	010-11	2021-01-24	10:30:00	6	1		\N	2021-01-27 21:24:49.353651+01	2021-01-27 21:24:49.367978+01
 2	3	Nowomiejska 15	500-600-700	Nowe Miasto	01-002	2021-02-03	10:20:00	3	1	Dary zostaną położone przed Klatką schodową.	t	2021-01-27 21:19:05.868234+01	2021-01-27 21:25:13.544372+01
-4	2	Admińska 0	100-200-300	Adminowo	01-212	2021-02-06	15:00:00	4	2		\N	2021-01-27 21:27:36.313136+01	2021-01-27 21:27:36.321333+01
-5	1	Admińska 0	100-200-400	Adminowo	123-45	2021-01-17	14:00:00	4	2		t	2021-01-27 21:28:31.559163+01	2021-01-27 21:28:46.07402+01
+5	1	Admińska 0	100-200-400	Adminowo	123-45	2021-01-17	14:00:00	4	1		t	2021-01-27 21:28:31.559163+01	2021-02-18 14:24:05.134345+01
+4	2	Admińska 0	100-200-300	Adminowo	01-212	2021-02-06	15:00:00	4	1		\N	2021-01-27 21:27:36.313136+01	2021-02-18 14:24:11.156889+01
 \.
 
 
@@ -925,7 +942,7 @@ SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auth_permission_id_seq', 36, true);
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 40, true);
 
 
 --
@@ -939,7 +956,7 @@ SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
 -- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auth_user_id_seq', 2, true);
+SELECT pg_catalog.setval('public.auth_user_id_seq', 33, true);
 
 
 --
@@ -953,21 +970,21 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 7, true);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 15, true);
 
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_content_type_id_seq', 9, true);
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 10, true);
 
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 25, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 26, true);
 
 
 --
@@ -981,14 +998,14 @@ SELECT pg_catalog.setval('public.donation_category_id_seq', 6, true);
 -- Name: donation_donation_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.donation_donation_categories_id_seq', 9, true);
+SELECT pg_catalog.setval('public.donation_donation_categories_id_seq', 12, true);
 
 
 --
 -- Name: donation_donation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.donation_donation_id_seq', 5, true);
+SELECT pg_catalog.setval('public.donation_donation_id_seq', 7, true);
 
 
 --
