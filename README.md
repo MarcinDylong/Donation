@@ -12,14 +12,14 @@ App in polish language, created within Portfolio Lab in Coderslab bootcamp.
 - PostgreSQL Database, Django Native ORM;
 - Authentication for user and reset password secured by Token (mails are sent within terminal);
 - DjangoTests;
-<br />
+<br/>
 
 ## How to use it
 
 ```bash
 $ # Get the code
 $ git clone https://github.com/MarcinDylong/Donation.git
-$ cd FPL
+$ cd Donation
 $
 $ # Virtualenv modules installation (Unix based systems)
 $ virtualenv env
@@ -33,13 +33,13 @@ $ # Install modules
 $ pip3 install -r requirements.txt
 $
 $ # Configure connection to database in .env.example
-$ Create DB in PostgreSQL
+$ # Create DB in PostgreSQL
 $
 $ # Provide your secret key, user name, password and database name
-$ SECRET_KEY=[YOUR_SECRET_KEY]
-$ DEBUG=FALSE
-$ ALLOWED_HOSTS=.localhost,127.0.0.1
-$ DATABASE_URL=postgres://[USER_NAME]:[PASSWORD]@localhost:5432/[YOUR_DATABASE_NAME]
+$ # SECRET_KEY=[YOUR_SECRET_KEY]
+$ # DEBUG=FALSE
+$ # ALLOWED_HOSTS=.localhost,127.0.0.1
+$ # DATABASE_URL=postgres://[USER_NAME]:[PASSWORD]@localhost:5432/[YOUR_DATABASE_NAME]
 $
 $ # After this change name of the file to .env (remove .example)
 $
@@ -47,7 +47,7 @@ $ # Create tables
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 $
-$ # Import data from db_dump.sql
+$ # Import data from db_dump.sql (not requeired but advised)
 $ pg_restore -d [YOUR_DATABASE_NAME] < db_dump.sql
 $
 $ # Start the application
